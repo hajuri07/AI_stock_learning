@@ -1,116 +1,240 @@
-📈 AI Stock Predictor & Analyst
+# 📈 AI Stock Predictor & Analyst
 
-An intelligent AI-powered stock prediction and analysis system that forecasts stock prices using Machine Learning and provides natural language explanations using a Large Language Model (LLM).
+An AI-powered system that predicts stock prices using Machine Learning and generates human-readable explanations using a Large Language Model.
 
-This project combines financial data analysis, machine learning, and generative AI to create an automated AI financial analyst that predicts stock trends and explains market behavior.
+This project combines **financial data analysis**, **time-series prediction**, and **Generative AI** to create an automated **AI financial analyst**.
 
-🚀 Features
-📊 Stock Price Prediction
-Uses historical stock market data
-Implements a sliding window time-series prediction approach
-Predicts future stock price movement
-📉 Trend Classification
+---
 
-Based on predicted price change, the system classifies the market trend as:
+# 🚀 Features
 
-📈 Upward
-📉 Downward
-➡️ Stable
-🧠 AI Explanation Engine
+### 📊 Stock Price Prediction
+- Uses historical stock market data
+- Implements a **sliding window time-series prediction**
+- Predicts **future stock price movements**
 
-The predicted results are passed to a Large Language Model which generates a human-like explanation of the stock trend.
+### 📉 Trend Detection
+Based on predicted price change, the system classifies the trend into:
+
+- 📈 Upward
+- 📉 Downward
+- ➡️ Stable
+
+### 🧠 AI Explanation
+The prediction results are passed to an LLM which generates a **natural language explanation** of the stock behavior.
+
+Example output:
+# 📈 AI Stock Predictor & Analyst
+
+An AI-powered system that predicts stock prices using Machine Learning and generates human-readable explanations using a Large Language Model.
+
+This project combines **financial data analysis**, **time-series prediction**, and **Generative AI** to create an automated **AI financial analyst**.
+
+---
+
+# 🚀 Features
+
+### 📊 Stock Price Prediction
+- Uses historical stock market data
+- Implements a **sliding window time-series prediction**
+- Predicts **future stock price movements**
+
+### 📉 Trend Detection
+Based on predicted price change, the system classifies the trend into:
+
+- 📈 Upward
+- 📉 Downward
+- ➡️ Stable
+
+### 🧠 AI Explanation
+The prediction results are passed to an LLM which generates a **natural language explanation** of the stock behavior.
 
 Example output:
 
-Stock: ICICI Bank
-Current Price: ₹2137
-Predicted Price: ₹2133
-Trend: Stable
+---
 
-Explanation:
-The predicted price shows only a minor change from the current price,
-indicating a relatively stable market condition. This suggests that
-recent trading activity does not show strong bullish or bearish momentum.
-🏗️ System Architecture
-        +---------------------+
-        |  Stock Market Data  |
-        |    (Yahoo Finance)  |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        | Data Preprocessing  |
-        |  Feature Selection  |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        |  ML Prediction      |
-        | Sliding Window      |
-        | Time Series Model   |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        | Trend Detection     |
-        | Up / Down / Stable  |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        | LLM Explanation     |
-        | (Groq API)          |
-        | llama-3.3-70b       |
-        +----------+----------+
-                   |
-                   v
-        +---------------------+
-        | Final AI Analysis   |
-        +---------------------+
-🧠 AI Model Used
-Large Language Model
+# 🏗 System Architecture
 
-The explanation engine uses:
 
-Model: llama-3.3-70b-versatile
-Provider: Groq
+Stock Market Data (Yahoo Finance)
+│
+▼
+Data Preprocessing
+│
+▼
+Machine Learning Model
+(Sliding Window Prediction)
+│
+▼
+Trend Detection
+(Up / Down / Stable)
+│
+▼
+LLM Explanation Engine
+(Groq API)
+│
+▼
+Final AI Analysis Output
 
-Why this model?
+---
 
-High-quality reasoning
-Fast inference using Groq
-Excellent natural language explanations
-Ideal for analytical tasks like financial interpretation
+# 🧠 AI Model
+
+The explanation engine uses a Large Language Model.
+
+**Model:** `llama-3.3-70b-versatile`  
+**Provider:** Groq
+
+This model was selected because it provides:
+
+- Strong reasoning capability
+- Fast inference
+- High-quality natural language explanations
+- Good performance for analytical tasks
 
 The model analyzes:
+- Current stock price
+- Predicted price
+- Percentage change
+- Market trend
 
-Current stock price
-Predicted stock price
-Percentage change
-Market trend
+and generates a human-readable explanation.
 
-And produces a human-readable explanation.
+---
 
-📊 Data Source
+# 📊 Data Source
 
-Stock data is fetched using:
+Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
 
-Yahoo Finance API
+Data features include:
 
-Library used:
+- Open
+- High
+- Low
+- Close
+- Volume
 
-yfinance
+Example companies used in this project:
 
-Data includes:
+---
 
-Open price
-High price
-Low price
-Close price
-Volume
+# 🧠 AI Model
 
-Example companies used:
+The explanation engine uses a Large Language Model.
 
+**Model:** `llama-3.3-70b-versatile`  
+**Provider:** Groq
+
+This model was selected because it provides:
+
+- Strong reasoning capability
+- Fast inference
+- High-quality natural language explanations
+- Good performance for analytical tasks
+
+The model analyzes:
+- Current stock price
+- Predicted price
+- Percentage change
+- Market trend
+
+and generates a human-readable explanation.
+
+---
+
+# 📊 Data Source
+
+Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
+
+Data features include:
+
+- Open
+- High
+- Low
+- Close
+- Volume
+
+Example companies used in this project:
+
+---
+
+# 🧠 AI Model
+
+The explanation engine uses a Large Language Model.
+
+**Model:** `llama-3.3-70b-versatile`  
+**Provider:** Groq
+
+This model was selected because it provides:
+
+- Strong reasoning capability
+- Fast inference
+- High-quality natural language explanations
+- Good performance for analytical tasks
+
+The model analyzes:
+- Current stock price
+- Predicted price
+- Percentage change
+- Market trend
+
+and generates a human-readable explanation.
+
+---
+
+# 📊 Data Source
+
+Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
+
+Data features include:
+
+- Open
+- High
+- Low
+- Close
+- Volume
+
+Example companies used in this project:
+
+---
+
+# 🧠 AI Model
+
+The explanation engine uses a Large Language Model.
+
+**Model:** `llama-3.3-70b-versatile`  
+**Provider:** Groq
+
+This model was selected because it provides:
+
+- Strong reasoning capability
+- Fast inference
+- High-quality natural language explanations
+- Good performance for analytical tasks
+
+The model analyzes:
+- Current stock price
+- Predicted price
+- Percentage change
+- Market trend
+
+and generates a human-readable explanation.
+
+---
+
+# 📊 Data Source
+
+Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
+
+Data features include:
+
+- Open
+- High
+- Low
+- Close
+- Volume
+
+Example companies used in this project:
 RELIANCE
 TCS
 INFY
@@ -121,71 +245,104 @@ ITC
 LT
 BHARTIARTL
 SBIN
-⚙️ Machine Learning Approach
-Sliding Window Time Series Prediction
 
-The model uses a 5-day sliding window to predict the next price.
+---
+
+# ⚙️ Machine Learning Approach
+
+The model uses a **sliding window time-series technique**.
 
 Example:
-
 Day1 Day2 Day3 Day4 Day5 → Predict Day6
 
-Training samples look like:
 
+Training sample example:
 [2140, 2139, 2138, 2136, 2137] → 2133
 
-This allows the model to learn short-term price patterns.
 
-📉 Trend Classification Logic
+This approach helps the model learn **short-term market patterns**.
 
-The predicted trend is calculated using percentage change:
+---
+
+# 📉 Trend Classification
+
+Trend is determined using percentage change between predicted and current price.
+
 
 change % = (predicted_price - current_price) / current_price * 100
 
+
 Trend thresholds:
 
-> +1%  → Upward 📈
-< -1%  → Downward 📉
-Else   → Stable ➡️
 
-This helps filter normal market noise.
++1% → Upward 📈
+< -1% → Downward 📉
+Else → Stable ➡️
 
-🛠️ Tech Stack
-Programming Language
-Python
-Libraries
-NumPy
-Pandas
-yfinance
-Scikit-learn
-AI / LLM
-Groq API
-llama-3.3-70b-versatile
-Data Handling
-Pandas DataFrames
-Time-series preprocessing
-📦 Installation
+
+These thresholds help reduce **normal market noise**.
+
+---
+
+# 🛠 Tech Stack
+
+### Programming Language
+- Python
+
+### Libraries
+- NumPy
+- Pandas
+- Scikit-learn
+- yfinance
+
+### AI / LLM
+- Groq API
+- llama-3.3-70b-versatile
+
+---
+
+# 📦 Installation
 
 Clone the repository:
 
+
 git clone https://github.com/yourusername/ai-stock-analyst.git
 
-Move into project directory:
+
+Navigate to the project directory:
+
 
 cd ai-stock-analyst
 
+
 Install dependencies:
 
-pip install -r requirements.txt
-🔑 Setup API Key
 
-Create a .env file:
+pip install -r requirements.txt
+
+
+---
+
+# 🔑 API Setup
+
+Create a `.env` file in the root directory and add your Groq API key:
+
 
 GROQ_API_KEY=your_api_key_here
-▶️ Run The Project
+
+
+---
+
+# ▶️ Running the Project
+
+Run the main script:
+
+
 python main.py
 
+
 Example output:
+
 
 Stock: ICICI Bank
 Current Price: 2137
@@ -193,16 +350,22 @@ Predicted Price: 2133
 Trend: Stable
 
 AI Analysis:
-The predicted price shows minimal deviation from the current market price,
-indicating relatively balanced market sentiment. This suggests neither
-strong buying nor selling pressure in the short term.
-📌 Future Improvements
+The predicted price shows minimal deviation from the current market
+price, suggesting balanced market sentiment with no strong upward
+or downward momentum in the short term.
 
-Possible upgrades for this project:
 
-LSTM deep learning models
-Technical indicators (RSI, MACD, Moving Averages)
-Real-time dashboard
-Streamlit web interface
-Multi-stock portfolio analysis
-AI trading signals
+---
+
+# 🔮 Future Improvements
+
+Possible enhancements:
+
+- LSTM or Transformer-based prediction models
+- Technical indicators (RSI, MACD, Moving Averages)
+- Real-time dashboard using Streamlit
+- Portfolio-level analysis
+- AI trading signals
+
+---
+
