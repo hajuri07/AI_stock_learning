@@ -2,9 +2,8 @@ streamlit
 plotly
 yfinance
 ta
-tensorflow
+tensorflow==2.19.1
 groq
 scikit-learn
 pandas
 numpy
- 
