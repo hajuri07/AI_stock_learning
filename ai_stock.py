@@ -122,7 +122,7 @@ def trainLSTM(prices,lookback=lstm_lookback,epochs=lstm_epochs):
   predicted_price = scaler.inverse_transform([[pred_scaled]])[0][0]
   return predicted_price
 
-client = Groq(api_key="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")
+client = Groq(api_key="enter your api key here")
 
 def get_llm_explanation(symbol,current_price,lstm_price,change_pct,trend,rsi,macd):
   prompt=f"""
