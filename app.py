@@ -1,42 +1,51 @@
+# ============================================================
+#   APP.PY — StockSense AI · Streamlit UI
+#   Theme: Warm Editorial Luxury — deep green, cream, gold
+#   Run:   streamlit run app.py
+# ============================================================
+
 import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
 import pandas as pd
 import time
 
-from predictor import COMPANIES, run_prediction   # ← all ML lives here
+from predictor import COMPANIES, run_prediction
 
 # ============================================================
 #   PAGE CONFIG
 # ============================================================
 st.set_page_config(
     page_title="StockSense AI",
-    page_icon="◈",
+    page_icon="◆",
     layout="wide",
     initial_sidebar_state="expanded"
 )
 
 # ============================================================
-#   CSS — Bloomberg Terminal × Neon Noir
+#   CSS — Editorial Luxury Theme
 # ============================================================
 st.markdown("""
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Share+Tech+Mono&family=Exo+2:wght@200;400;700;900&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-    --bg:      #03070f;
-    --bg2:     #060d1a;
-    --accent:  #00e5ff;
-    --accent2: #ff6b35;
-    --green:   #39ff14;
-    --red:     #ff2d55;
-    --gold:    #ffd60a;
-    --dim:     rgba(0,229,255,0.12);
-    --border:  rgba(0,229,255,0.18);
-    --text:    #c8e6ff;
-    --muted:   rgba(150,200,230,0.45);
-    --mono:    'Share Tech Mono', monospace;
-    --sans:    'Exo 2', sans-serif;
+    --cream:     #faf7f2;
+    --cream2:    #f2ede4;
+    --green:     #1a3a2a;
+    --green2:    #2d5a3d;
+    --green3:    #3d7a52;
+    --gold:      #c9973a;
+    --gold2:     #e8b84b;
+    --red:       #b94040;
+    --text:      #1a1a1a;
+    --text2:     #4a4a4a;
+    --text3:     #7a7a7a;
+    --border:    rgba(26,58,42,0.12);
+    --border2:   rgba(26,58,42,0.06);
+    --serif:     'Playfair Display', Georgia, serif;
+    --sans:      'DM Sans', sans-serif;
+    --mono:      'DM Mono', monospace;
 }
 
 *, *::before, *::after { box-sizing: border-box; }
@@ -44,296 +53,504 @@ st.markdown("""
 html, body,
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"], .main {
-    background: var(--bg) !important;
+    background: var(--cream) !important;
     color: var(--text) !important;
     font-family: var(--sans) !important;
-}
-
-[data-testid="stAppViewContainer"]::after {
-    content: '';
-    position: fixed; inset: 0;
-    background: repeating-linear-gradient(
-        0deg, transparent, transparent 2px,
-        rgba(0,0,0,0.06) 2px, rgba(0,0,0,0.06) 4px
-    );
-    pointer-events: none; z-index: 9998;
 }
 
 #MainMenu, footer, header,
 [data-testid="stToolbar"],
 [data-testid="stDecoration"] { display: none !important; }
 
-.block-container { padding: 0 2.5rem 4rem !important; max-width: 1440px !important; }
+.block-container { padding: 0 3rem 4rem !important; max-width: 1400px !important; }
 
-::-webkit-scrollbar { width: 3px; height: 3px; }
-::-webkit-scrollbar-track { background: var(--bg); }
-::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 2px; }
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: var(--cream2); }
+::-webkit-scrollbar-thumb { background: var(--green3); border-radius: 2px; }
 
 /* ── SIDEBAR ── */
 [data-testid="stSidebar"] {
-    background: var(--bg2) !important;
-    border-right: 1px solid var(--border) !important;
+    background: var(--green) !important;
+    border-right: none !important;
 }
-[data-testid="stSidebar"] * { color: var(--text) !important; font-family: var(--mono) !important; }
+[data-testid="stSidebar"] * {
+    color: rgba(250,247,242,0.85) !important;
+    font-family: var(--sans) !important;
+}
 [data-testid="stSidebar"] .stTextInput input {
-    background: rgba(0,5,15,0.9) !important;
-    border: 1px solid var(--border) !important;
-    color: var(--accent) !important;
+    background: rgba(250,247,242,0.08) !important;
+    border: 1px solid rgba(250,247,242,0.2) !important;
+    color: var(--cream) !important;
     font-family: var(--mono) !important;
-    font-size: 0.75rem !important;
-    border-radius: 2px !important;
+    font-size: 0.8rem !important;
+    border-radius: 4px !important;
 }
 [data-testid="stSidebar"] .stTextInput label {
-    font-size: 0.58rem !important;
-    letter-spacing: 0.3em !important;
+    font-size: 0.65rem !important;
+    letter-spacing: 0.15em !important;
     text-transform: uppercase !important;
-    color: var(--muted) !important;
+    color: rgba(250,247,242,0.5) !important;
+    font-family: var(--mono) !important;
 }
-.api-status-ok   { color: #39ff14; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em; }
-.api-status-none { color: #ffd60a; font-family: var(--mono); font-size: 0.65rem; letter-spacing: 0.2em; }
+.key-ok   { color: #7ec98a; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+.key-none { color: #e8b84b; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
 
-/* ── TICKER TAPE ── */
+/* ── TICKER STRIP ── */
 .ticker-wrap {
-    overflow: hidden; background: rgba(0,229,255,0.03);
-    border-bottom: 1px solid var(--border); padding: 0.4rem 0; white-space: nowrap;
+    overflow: hidden;
+    background: var(--green);
+    padding: 0.55rem 0;
+    white-space: nowrap;
 }
 .ticker-inner {
-    display: inline-block; animation: ticker 35s linear infinite;
-    font-family: var(--mono); font-size: 0.7rem;
-    color: var(--accent); letter-spacing: 0.08em;
+    display: inline-block;
+    animation: ticker 40s linear infinite;
+    font-family: var(--mono);
+    font-size: 0.68rem;
+    color: rgba(250,247,242,0.7);
+    letter-spacing: 0.06em;
 }
 .ticker-inner span { margin: 0 2.5rem; }
-.ticker-inner .up   { color: var(--green); }
-.ticker-inner .down { color: var(--red); }
+.ticker-inner .up   { color: #7ec98a; }
+.ticker-inner .down { color: #e07070; }
+.ticker-inner .mid  { color: rgba(250,247,242,0.45); }
 @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
 /* ── HERO ── */
-.hero { padding: 2.5rem 0 1.5rem; text-align: center; }
+.hero {
+    padding: 4rem 0 2.5rem;
+    border-bottom: 1px solid var(--border);
+    margin-bottom: 2.5rem;
+}
 .hero-eyebrow {
-    font-family: var(--mono); font-size: 0.62rem;
-    letter-spacing: 0.5em; color: var(--accent);
-    text-transform: uppercase; opacity: 0.65; margin-bottom: 0.6rem;
+    font-family: var(--mono);
+    font-size: 0.62rem;
+    letter-spacing: 0.3em;
+    color: var(--gold);
+    text-transform: uppercase;
+    margin-bottom: 1rem;
 }
 .hero-title {
-    font-family: var(--sans); font-size: clamp(3rem,8vw,6.5rem);
-    font-weight: 900; line-height: 0.9; text-transform: uppercase;
-    letter-spacing: -0.02em;
-    background: linear-gradient(160deg, #fff 0%, var(--accent) 40%, var(--accent2) 100%);
-    -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-    animation: heroGlow 4s ease-in-out infinite alternate;
+    font-family: var(--serif);
+    font-size: clamp(2.8rem, 6vw, 5rem);
+    font-weight: 700;
+    color: var(--green);
+    line-height: 1.05;
+    margin-bottom: 0.8rem;
+    letter-spacing: -0.01em;
 }
-@keyframes heroGlow {
-    from { filter: drop-shadow(0 0 20px rgba(0,229,255,0.3)); }
-    to   { filter: drop-shadow(0 0 40px rgba(255,107,53,0.4)); }
+.hero-title em {
+    font-style: italic;
+    color: var(--gold);
 }
 .hero-sub {
-    font-family: var(--mono); font-size: 0.72rem;
-    letter-spacing: 0.3em; color: var(--muted); margin-top: 0.8rem;
+    font-family: var(--sans);
+    font-size: 1rem;
+    color: var(--text3);
+    font-weight: 300;
+    letter-spacing: 0.02em;
 }
-.hero-divider {
-    display: flex; align-items: center; gap: 1rem;
-    margin: 1.5rem auto; max-width: 500px;
-}
-.hero-divider::before { content:''; flex:1; height:1px; background: linear-gradient(90deg,transparent,var(--accent)); }
-.hero-divider::after  { content:''; flex:1; height:1px; background: linear-gradient(90deg,var(--accent),transparent); }
-.hero-diamond {
-    width:8px; height:8px; background:var(--accent); transform:rotate(45deg);
-    animation: pulse 2s ease-in-out infinite;
-}
-@keyframes pulse {
-    0%,100%{box-shadow:0 0 0 0 rgba(0,229,255,0.4)}
-    50%{box-shadow:0 0 0 8px rgba(0,229,255,0)}
+.hero-rule {
+    width: 48px;
+    height: 2px;
+    background: var(--gold);
+    margin: 1.5rem 0;
 }
 
-/* ── SELECTOR ── */
-.selector-panel {
-    background: linear-gradient(135deg,rgba(0,229,255,0.04),rgba(255,107,53,0.02));
-    border: 1px solid var(--border); border-radius: 2px;
-    padding: 1.8rem 2rem; margin-bottom: 1.5rem; position: relative;
-    clip-path: polygon(0 0,calc(100% - 16px) 0,100% 16px,100% 100%,16px 100%,0 calc(100% - 16px));
+/* ── SELECTOR PANEL ── */
+.selector-wrap {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.8rem 2rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 2px 20px rgba(26,58,42,0.06);
 }
-.selector-panel::before {
-    content: 'MARKET TERMINAL v2.4';
-    position: absolute; top: -1px; left: 1.5rem;
-    font-family: var(--mono); font-size: 0.52rem; letter-spacing: 0.3em;
-    color: var(--bg); background: var(--accent); padding: 0.15rem 0.6rem;
+.selector-label {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.2em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.5rem;
 }
+
 [data-testid="stSelectbox"] > div > div {
-    background: rgba(0,5,15,0.9) !important;
-    border: 1px solid var(--border) !important; border-radius: 2px !important;
-    color: var(--accent) !important; font-family: var(--mono) !important; font-size: 0.8rem !important;
+    background: var(--cream) !important;
+    border: 1px solid var(--border) !important;
+    border-radius: 6px !important;
+    color: var(--text) !important;
+    font-family: var(--sans) !important;
+    font-size: 0.9rem !important;
 }
 [data-testid="stSelectbox"] label {
-    font-family: var(--mono) !important; font-size: 0.58rem !important;
-    letter-spacing: 0.35em !important; color: var(--muted) !important; text-transform: uppercase !important;
+    font-family: var(--mono) !important;
+    font-size: 0.6rem !important;
+    letter-spacing: 0.15em !important;
+    color: var(--text3) !important;
+    text-transform: uppercase !important;
 }
 .stButton > button {
-    width: 100% !important; background: transparent !important;
-    border: 1px solid var(--accent) !important; color: var(--accent) !important;
-    font-family: var(--mono) !important; font-size: 0.75rem !important;
-    letter-spacing: 0.3em !important; text-transform: uppercase !important;
-    padding: 0.8rem !important; border-radius: 0 !important; transition: all 0.2s !important;
+    width: 100% !important;
+    background: var(--green) !important;
+    border: none !important;
+    color: var(--cream) !important;
+    font-family: var(--sans) !important;
+    font-size: 0.85rem !important;
+    font-weight: 500 !important;
+    letter-spacing: 0.05em !important;
+    padding: 0.75rem 1.5rem !important;
+    border-radius: 6px !important;
+    transition: all 0.2s !important;
 }
 .stButton > button:hover {
-    background: rgba(0,229,255,0.08) !important;
-    box-shadow: 0 0 30px rgba(0,229,255,0.25) !important; color: #fff !important;
+    background: var(--green2) !important;
+    box-shadow: 0 4px 16px rgba(26,58,42,0.25) !important;
+    transform: translateY(-1px) !important;
 }
 
 /* ── PROCESS LOG ── */
 .process-log {
-    background: rgba(0,0,0,0.55); border: 1px solid rgba(0,229,255,0.1);
-    border-left: 3px solid var(--accent); padding: 1rem 1.4rem;
-    font-family: var(--mono); font-size: 0.7rem; line-height: 2; margin: 1rem 0;
+    background: white;
+    border: 1px solid var(--border);
+    border-left: 3px solid var(--green3);
+    border-radius: 0 6px 6px 0;
+    padding: 1rem 1.4rem;
+    font-family: var(--mono);
+    font-size: 0.7rem;
+    line-height: 2;
+    margin: 1.5rem 0;
 }
-.log-line { display:flex; align-items:flex-start; gap:0.8rem; }
-.log-time  { color:var(--muted); min-width:65px; }
-.log-tag   { padding:0.05rem 0.4rem; font-size:0.58rem; letter-spacing:0.08em; min-width:58px; text-align:center; }
-.tag-ok    { background:rgba(57,255,20,0.12);  color:var(--green);   border:1px solid rgba(57,255,20,0.3); }
-.tag-run   { background:rgba(0,229,255,0.08);  color:var(--accent);  border:1px solid rgba(0,229,255,0.25); }
-.tag-ai    { background:rgba(255,107,53,0.1);  color:var(--accent2); border:1px solid rgba(255,107,53,0.3); }
-.tag-warn  { background:rgba(255,214,10,0.08); color:var(--gold);    border:1px solid rgba(255,214,10,0.3); }
-.log-msg   { color:var(--text); }
+.log-line { display: flex; align-items: flex-start; gap: 0.8rem; }
+.log-time  { color: var(--text3); min-width: 65px; }
+.log-tag   { padding: 0.05rem 0.5rem; font-size: 0.58rem; letter-spacing: 0.06em; min-width: 52px; text-align: center; border-radius: 3px; }
+.tag-ok    { background: rgba(126,201,138,0.15); color: #2d7a3a; border: 1px solid rgba(126,201,138,0.3); }
+.tag-run   { background: rgba(26,58,42,0.06);   color: var(--green2); border: 1px solid var(--border); }
+.tag-ai    { background: rgba(201,151,58,0.12);  color: #8a6020; border: 1px solid rgba(201,151,58,0.3); }
+.tag-warn  { background: rgba(185,64,64,0.08);   color: var(--red); border: 1px solid rgba(185,64,64,0.2); }
+.log-msg   { color: var(--text2); }
+
+/* ── SECTION HEADER ── */
+.sec-head {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2.5rem 0 1.2rem;
+}
+.sec-head-line {
+    flex: 1;
+    height: 1px;
+    background: var(--border);
+}
+.sec-head-text {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.25em;
+    color: var(--text3);
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.sec-head-dot {
+    width: 6px;
+    height: 6px;
+    background: var(--gold);
+    border-radius: 50%;
+    flex-shrink: 0;
+}
 
 /* ── METRIC CARDS ── */
-.metric-strip { display:grid; grid-template-columns:repeat(4,1fr); gap:0.8rem; margin:1.2rem 0; }
+.metric-strip {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+}
 .mcard {
-    background:var(--bg2); border:1px solid var(--border); padding:1.2rem 1.4rem;
-    clip-path:polygon(0 0,calc(100% - 10px) 0,100% 10px,100% 100%,0 100%);
-    animation:cardIn 0.5s cubic-bezier(0.16,1,0.3,1) both;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.4rem 1.6rem;
+    animation: fadeUp 0.4s ease both;
+    position: relative;
+    overflow: hidden;
 }
-.mcard:nth-child(1){animation-delay:.05s;border-top:2px solid var(--accent);}
-.mcard:nth-child(2){animation-delay:.12s;border-top:2px solid var(--green);}
-.mcard:nth-child(3){animation-delay:.19s;border-top:2px solid var(--accent2);}
-.mcard:nth-child(4){animation-delay:.26s;border-top:2px solid var(--gold);}
-@keyframes cardIn { from{opacity:0;transform:translateY(16px) scale(0.97)} to{opacity:1;transform:translateY(0) scale(1)} }
-.mcard-label { font-family:var(--mono); font-size:0.57rem; letter-spacing:0.3em; color:var(--muted); text-transform:uppercase; margin-bottom:0.5rem; }
-.mcard-value { font-family:var(--mono); font-size:1.85rem; font-weight:400; line-height:1; color:#fff; }
-.mcard-value.c-green  { color:var(--green);  text-shadow:0 0 20px rgba(57,255,20,0.5); }
-.mcard-value.c-red    { color:var(--red);    text-shadow:0 0 20px rgba(255,45,85,0.5); }
-.mcard-value.c-gold   { color:var(--gold);   text-shadow:0 0 20px rgba(255,214,10,0.4); }
-.mcard-value.c-accent { color:var(--accent); text-shadow:0 0 20px rgba(0,229,255,0.4); }
-.mcard-sub { font-family:var(--mono); font-size:0.58rem; color:var(--muted); margin-top:0.4rem; letter-spacing:0.1em; }
+.mcard::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 3px;
+}
+.mcard:nth-child(1)::before { background: var(--green); }
+.mcard:nth-child(2)::before { background: var(--gold); }
+.mcard:nth-child(3)::before { background: var(--green3); }
+.mcard:nth-child(4)::before { background: #8a7a5a; }
+.mcard:nth-child(1) { animation-delay: 0.05s; }
+.mcard:nth-child(2) { animation-delay: 0.1s; }
+.mcard:nth-child(3) { animation-delay: 0.15s; }
+.mcard:nth-child(4) { animation-delay: 0.2s; }
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(12px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+.mcard-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.18em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+}
+.mcard-value {
+    font-family: var(--serif);
+    font-size: 2rem;
+    font-weight: 600;
+    line-height: 1;
+    color: var(--text);
+}
+.mcard-value.c-green { color: var(--green2); }
+.mcard-value.c-red   { color: var(--red); }
+.mcard-value.c-gold  { color: var(--gold); }
+.mcard-sub {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    color: var(--text3);
+    margin-top: 0.5rem;
+    letter-spacing: 0.08em;
+}
 
-/* ── INDICATOR PILLS ── */
-.ind-row { display:grid; grid-template-columns:repeat(3,1fr); gap:0.8rem; margin:1rem 0; }
+/* ── INDICATOR CARDS ── */
+.ind-row {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 1rem;
+    margin: 1rem 0;
+}
 .ind-card {
-    background:var(--bg2); border:1px solid var(--border); padding:1rem 1.2rem;
-    animation:cardIn 0.5s cubic-bezier(0.16,1,0.3,1) 0.3s both;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 1.2rem 1.4rem;
+    animation: fadeUp 0.4s ease 0.25s both;
 }
-.ind-label { font-family:var(--mono); font-size:0.57rem; letter-spacing:0.28em; color:var(--muted); text-transform:uppercase; margin-bottom:0.5rem; }
-.ind-value { font-family:var(--mono); font-size:1.5rem; }
-.ind-bar-bg { height:3px; background:rgba(255,255,255,0.05); margin:0.5rem 0 0.3rem; border-radius:2px; overflow:hidden; }
-.ind-bar-fill { height:100%; border-radius:2px; }
-.ind-status { font-family:var(--mono); font-size:0.57rem; letter-spacing:0.2em; text-transform:uppercase; }
+.ind-label {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.15em;
+    color: var(--text3);
+    text-transform: uppercase;
+    margin-bottom: 0.6rem;
+}
+.ind-value {
+    font-family: var(--serif);
+    font-size: 1.8rem;
+    font-weight: 600;
+    line-height: 1;
+}
+.ind-bar-bg {
+    height: 4px;
+    background: var(--cream2);
+    margin: 0.7rem 0 0.4rem;
+    border-radius: 2px;
+    overflow: hidden;
+}
+.ind-bar-fill {
+    height: 100%;
+    border-radius: 2px;
+    transition: width 1s ease;
+}
+.ind-status {
+    font-family: var(--mono);
+    font-size: 0.6rem;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-top: 0.3rem;
+}
 
-/* ── AI PANEL ── */
+/* ── AI EXPLANATION PANEL ── */
 .ai-panel {
-    background:linear-gradient(135deg,rgba(0,229,255,0.025),rgba(255,107,53,0.025));
-    border:1px solid var(--border); border-left:3px solid var(--accent2);
-    padding:1.8rem 2rem; margin:1rem 0; position:relative;
-    animation:cardIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.4s both;
-    clip-path:polygon(0 0,100% 0,100% calc(100% - 14px),calc(100% - 14px) 100%,0 100%);
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 2rem 2.4rem;
+    margin: 1rem 0;
+    animation: fadeUp 0.5s ease 0.3s both;
 }
-.ai-header { display:flex; align-items:center; gap:0.8rem; margin-bottom:1rem; }
-.ai-dot { width:6px; height:6px; background:var(--accent2); border-radius:50%; animation:pulse 1.5s ease-in-out infinite; }
-.ai-tag { font-family:var(--mono); font-size:0.58rem; letter-spacing:0.3em; color:var(--accent2); text-transform:uppercase; }
-.ai-model { font-family:var(--mono); font-size:0.55rem; color:var(--muted); margin-left:auto; letter-spacing:0.08em; }
-.ai-body { font-family:var(--sans); font-size:1.05rem; font-weight:300; line-height:1.8; color:rgba(200,230,255,0.9); }
-
-/* ── SECTION LABEL ── */
-.sec-label {
-    font-family:var(--mono); font-size:0.58rem; letter-spacing:0.45em; color:var(--accent);
-    text-transform:uppercase; opacity:0.6; margin:2rem 0 0.8rem;
-    display:flex; align-items:center; gap:0.8rem;
+.ai-header {
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    margin-bottom: 1.2rem;
+    padding-bottom: 1rem;
+    border-bottom: 1px solid var(--border2);
 }
-.sec-label::after { content:''; flex:1; height:1px; background:linear-gradient(90deg,var(--border),transparent); }
+.ai-badge {
+    background: var(--green);
+    color: var(--cream) !important;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.1em;
+    padding: 0.25rem 0.7rem;
+    border-radius: 3px;
+    text-transform: uppercase;
+}
+.ai-model-tag {
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    color: var(--text3);
+    letter-spacing: 0.06em;
+    margin-left: auto;
+}
+.ai-body {
+    font-family: var(--sans);
+    font-size: 1.05rem;
+    font-weight: 300;
+    line-height: 1.85;
+    color: var(--text2);
+}
+.ai-body p { margin: 0 0 0.8rem 0; }
+.ai-body p:last-child { margin-bottom: 0; }
 
-/* ── CHART BOX ── */
-.chart-box {
-    border:1px solid var(--border); background:rgba(0,5,10,0.5);
-    margin-bottom:0.8rem; padding:0.5rem;
-    animation:cardIn 0.6s cubic-bezier(0.16,1,0.3,1) 0.2s both;
-    clip-path:polygon(0 0,calc(100% - 14px) 0,100% 14px,100% 100%,14px 100%,0 calc(100% - 14px));
+/* ── CHART CARD ── */
+.chart-card {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 8px;
+    padding: 0.5rem;
+    margin-bottom: 1rem;
+    animation: fadeUp 0.5s ease 0.2s both;
+    overflow: hidden;
 }
 
-/* ── IDLE ── */
-.idle-wrap { display:flex; flex-direction:column; align-items:center; padding:5rem 2rem; gap:1.5rem; }
-.idle-ring { width:80px; height:80px; border:1px solid rgba(0,229,255,0.2); border-top:2px solid var(--accent); border-radius:50%; animation:spin 3s linear infinite; }
-.idle-ring-inner { width:50px; height:50px; border:1px solid rgba(255,107,53,0.2); border-bottom:2px solid var(--accent2); border-radius:50%; animation:spin 2s linear infinite reverse; margin:13px auto; }
-@keyframes spin { to{transform:rotate(360deg)} }
-.idle-text { font-family:var(--mono); font-size:0.68rem; letter-spacing:0.4em; color:var(--muted); text-transform:uppercase; text-align:center; }
+/* ── IDLE STATE ── */
+.idle-wrap {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 6rem 2rem;
+    gap: 1.2rem;
+    text-align: center;
+}
+.idle-icon {
+    width: 56px;
+    height: 56px;
+    border: 1px solid var(--border);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 1.4rem;
+    color: var(--green3);
+    background: white;
+}
+.idle-title {
+    font-family: var(--serif);
+    font-size: 1.5rem;
+    color: var(--green);
+    font-weight: 600;
+}
+.idle-sub {
+    font-family: var(--sans);
+    font-size: 0.875rem;
+    color: var(--text3);
+    font-weight: 300;
+    max-width: 320px;
+    line-height: 1.6;
+}
 
 /* ── FOOTER ── */
 .app-footer {
-    text-align:center; padding:2rem 0; font-family:var(--mono); font-size:0.52rem;
-    letter-spacing:0.35em; color:rgba(0,229,255,0.15); text-transform:uppercase;
-    border-top:1px solid rgba(0,229,255,0.06); margin-top:3rem;
+    text-align: center;
+    padding: 2.5rem 0;
+    font-family: var(--mono);
+    font-size: 0.58rem;
+    letter-spacing: 0.2em;
+    color: var(--text3);
+    text-transform: uppercase;
+    border-top: 1px solid var(--border);
+    margin-top: 3rem;
 }
-[data-testid="stDataFrame"] { border:1px solid var(--border) !important; }
+
+/* dataframe */
+[data-testid="stDataFrame"] {
+    border: 1px solid var(--border) !important;
+    border-radius: 8px !important;
+    overflow: hidden;
+}
 </style>
 """, unsafe_allow_html=True)
 
 
 # ============================================================
-#   SIDEBAR — API KEY INPUT
+#   SIDEBAR
 # ============================================================
 with st.sidebar:
     st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.6rem;
-                letter-spacing:0.4em;color:rgba(0,229,255,0.5);
-                text-transform:uppercase;margin-bottom:1.5rem;padding-bottom:0.8rem;
-                border-bottom:1px solid rgba(0,229,255,0.1)">
-        ◈ StockSense AI · Config
+    <div style="padding: 2rem 1.5rem 1.5rem;">
+        <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.25em;
+                    color:rgba(250,247,242,0.4);text-transform:uppercase;margin-bottom:0.5rem">
+            Configuration
+        </div>
+        <div style="font-family:'Playfair Display',serif;font-size:1.5rem;
+                    color:rgba(250,247,242,0.95);font-weight:600;margin-bottom:1.5rem;
+                    padding-bottom:1.5rem;border-bottom:1px solid rgba(250,247,242,0.1)">
+            StockSense
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
     groq_key = st.text_input(
-        "GROQ API KEY",
+        "Groq API Key",
         type="password",
         placeholder="gsk_...",
         help="Get your free key at console.groq.com"
     )
 
     if groq_key and groq_key.strip():
-        st.markdown('<div class="api-status-ok">▲ KEY CONNECTED · AI READY</div>',
+        st.markdown('<div style="padding:0 1.5rem"><div class="key-ok">✓ Key connected — AI ready</div></div>',
                     unsafe_allow_html=True)
     else:
-        st.markdown('<div class="api-status-none">◆ NO KEY · AI DISABLED</div>',
+        st.markdown('<div style="padding:0 1.5rem"><div class="key-none">○ No key — AI disabled</div></div>',
                     unsafe_allow_html=True)
-        st.markdown("""
-        <div style="font-family:'Share Tech Mono',monospace;font-size:0.58rem;
-                    color:rgba(150,200,230,0.35);margin-top:0.8rem;line-height:1.8">
-            Get a free key at<br>
-            <span style="color:rgba(0,229,255,0.5)">console.groq.com</span><br><br>
-            Charts + LSTM work<br>without a key.
-        </div>
-        """, unsafe_allow_html=True)
 
-    st.markdown("<br>", unsafe_allow_html=True)
     st.markdown("""
-    <div style="font-family:'Share Tech Mono',monospace;font-size:0.52rem;
-                color:rgba(150,200,230,0.2);line-height:1.8">
-        Your key is never stored.<br>
-        Only used for this session.
+    <div style="padding: 1.5rem 1.5rem 0; margin-top:1rem;
+                border-top:1px solid rgba(250,247,242,0.08)">
+        <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;
+                    color:rgba(250,247,242,0.35);line-height:1.7;font-weight:300">
+            Your key is used only for this session and never stored anywhere.
+            Get a free key at console.groq.com
+        </div>
     </div>
     """, unsafe_allow_html=True)
 
 
 # ============================================================
-#   TICKER TAPE
+#   TICKER STRIP
 # ============================================================
 tape = (
     '<span class="up">RELIANCE ▲ 2.4%</span>'
+    '<span class="mid">·</span>'
     '<span class="down">TCS ▼ 0.8%</span>'
+    '<span class="mid">·</span>'
     '<span class="up">INFY ▲ 1.1%</span>'
+    '<span class="mid">·</span>'
     '<span class="up">HDFC ▲ 0.5%</span>'
+    '<span class="mid">·</span>'
     '<span class="down">ICICI ▼ 0.3%</span>'
+    '<span class="mid">·</span>'
     '<span class="up">ITC ▲ 1.8%</span>'
+    '<span class="mid">·</span>'
     '<span class="down">LT ▼ 0.6%</span>'
+    '<span class="mid">·</span>'
     '<span class="up">AIRTEL ▲ 2.1%</span>'
+    '<span class="mid">·</span>'
     '<span class="down">SBIN ▼ 1.2%</span>'
-    '<span>NIFTY 50 · 22,450</span>'
-    '<span>SENSEX · 74,120</span>'
+    '<span class="mid">·</span>'
+    '<span>NIFTY 50 &nbsp;22,450</span>'
+    '<span class="mid">·</span>'
+    '<span>SENSEX &nbsp;74,120</span>'
+    '<span class="mid">·</span>'
     '<span class="up">GOLD ▲ 0.4%</span>'
 )
 st.markdown(
@@ -347,10 +564,12 @@ st.markdown(
 # ============================================================
 st.markdown("""
 <div class="hero">
-    <div class="hero-eyebrow">◈ Neural Market Intelligence System ◈</div>
-    <div class="hero-title">StockSense AI</div>
-    <div class="hero-sub">LSTM · Groq LLaMA 3.3 · Technical Analysis · Real-time NSE Data</div>
-    <div class="hero-divider"><div class="hero-diamond"></div></div>
+    <div class="hero-eyebrow">◆ Neural Market Intelligence</div>
+    <div class="hero-title">StockSense <em>AI</em></div>
+    <div class="hero-rule"></div>
+    <div class="hero-sub">
+        Real-time NSE data · LSTM price forecasting · AI-powered plain-English analysis
+    </div>
 </div>
 """, unsafe_allow_html=True)
 
@@ -358,15 +577,15 @@ st.markdown("""
 # ============================================================
 #   SELECTOR
 # ============================================================
-st.markdown('<div class="selector-panel">', unsafe_allow_html=True)
+st.markdown('<div class="selector-wrap">', unsafe_allow_html=True)
 c1, c2, c3 = st.columns([3, 1, 1])
 with c1:
-    selected_name = st.selectbox("TARGET SYMBOL", list(COMPANIES.keys()), index=4)
+    selected_name = st.selectbox("Select Company", list(COMPANIES.keys()), index=4)
 with c2:
-    period = st.selectbox("DATA WINDOW", ["3mo", "6mo", "1y"], index=1)
+    period = st.selectbox("Time Window", ["3mo", "6mo", "1y"], index=1)
 with c3:
     st.markdown("<br>", unsafe_allow_html=True)
-    run = st.button("⬡ EXECUTE ANALYSIS")
+    run = st.button("Run Analysis →")
 st.markdown('</div>', unsafe_allow_html=True)
 
 symbol       = COMPANIES[selected_name]
@@ -374,30 +593,59 @@ ticker_label = selected_name.split("·")[0].strip()
 
 
 # ============================================================
-#   HELPERS
+#   CHART STYLING
 # ============================================================
 def plotly_layout(height=500):
     return dict(
-        paper_bgcolor="rgba(0,0,0,0)", plot_bgcolor="rgba(0,3,8,0.7)",
-        font=dict(family="Exo 2, sans-serif", color="rgba(180,210,230,0.65)", size=11),
-        height=height, margin=dict(l=8, r=8, t=38, b=8),
-        legend=dict(bgcolor="rgba(0,0,0,0)", font=dict(size=10),
-                    orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1),
-        xaxis=dict(gridcolor="rgba(0,229,255,0.05)", zerolinecolor="rgba(0,229,255,0.08)",
-                   showspikes=True, spikecolor="rgba(0,229,255,0.3)", spikethickness=1),
-        yaxis=dict(gridcolor="rgba(0,229,255,0.05)", zerolinecolor="rgba(0,229,255,0.08)"),
+        paper_bgcolor="rgba(0,0,0,0)",
+        plot_bgcolor="#fdfbf8",
+        font=dict(family="DM Sans, sans-serif", color="#4a4a4a", size=11),
+        height=height,
+        margin=dict(l=12, r=12, t=40, b=12),
+        legend=dict(
+            bgcolor="rgba(250,247,242,0.9)",
+            bordercolor="rgba(26,58,42,0.1)",
+            borderwidth=1,
+            font=dict(size=10),
+            orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
+        ),
+        xaxis=dict(
+            gridcolor="rgba(26,58,42,0.06)",
+            zerolinecolor="rgba(26,58,42,0.1)",
+            showspikes=True,
+            spikecolor="rgba(201,151,58,0.4)",
+            spikethickness=1,
+            linecolor="rgba(26,58,42,0.1)"
+        ),
+        yaxis=dict(
+            gridcolor="rgba(26,58,42,0.06)",
+            zerolinecolor="rgba(26,58,42,0.1)",
+            linecolor="rgba(26,58,42,0.1)"
+        ),
         hovermode="x unified",
-        hoverlabel=dict(bgcolor="#03070f", bordercolor="rgba(0,229,255,0.3)",
-                        font=dict(family="Share Tech Mono", size=11, color="#c8e6ff"))
+        hoverlabel=dict(
+            bgcolor="white",
+            bordercolor="rgba(26,58,42,0.15)",
+            font=dict(family="DM Mono", size=11, color="#1a1a1a")
+        )
     )
 
 
+def sec(label):
+    st.markdown(f"""
+    <div class="sec-head">
+        <div class="sec-head-dot"></div>
+        <div class="sec-head-text">{label}</div>
+        <div class="sec-head-line"></div>
+    </div>
+    """, unsafe_allow_html=True)
+
+
 # ============================================================
-#   ANALYSIS BLOCK
+#   ANALYSIS
 # ============================================================
 if run:
 
-    # ── Live log in UI ──────────────────────────────────────
     log_ph = st.empty()
     logs   = []
 
@@ -414,19 +662,17 @@ if run:
         html += '</div>'
         log_ph.markdown(html, unsafe_allow_html=True)
 
-    # ── Run full pipeline from predictor.py ────────────────
     try:
         result = run_prediction(
-            symbol      = symbol,
-            period      = period,
-            groq_api_key= groq_key,
-            log_callback= log_callback
+            symbol=symbol,
+            period=period,
+            groq_api_key=groq_key,
+            log_callback=log_callback
         )
     except Exception as e:
-        st.error(f"Pipeline error: {e}")
+        st.error(f"Analysis failed: {e}")
         st.stop()
 
-    # ── Unpack result ───────────────────────────────────────
     df              = result["df"]
     current_price   = result["current_price"]
     predicted_price = result["predicted_price"]
@@ -440,118 +686,121 @@ if run:
     macd_status     = result["macd_status"]
     explanation     = result["explanation"]
 
-    # ============================================================
-    #   METRIC CARDS
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ Live Metrics</div>', unsafe_allow_html=True)
+    # ── Metric Cards ─────────────────────────────────────────
+    sec("Overview")
     c_cls = "c-green" if change_pct > 0 else "c-red" if change_pct < 0 else "c-gold"
-    arrow = "▲" if change_pct > 0 else "▼" if change_pct < 0 else "◆"
+    arrow = "▲" if change_pct > 0 else "▼" if change_pct < 0 else "—"
 
     st.markdown(f"""
     <div class="metric-strip">
         <div class="mcard">
             <div class="mcard-label">Current Price</div>
-            <div class="mcard-value c-accent">₹{current_price:,.2f}</div>
-            <div class="mcard-sub">{ticker_label} · NSE LIVE</div>
+            <div class="mcard-value">₹{current_price:,.2f}</div>
+            <div class="mcard-sub">{ticker_label} · Live NSE</div>
         </div>
         <div class="mcard">
-            <div class="mcard-label">LSTM Prediction</div>
+            <div class="mcard-label">LSTM Forecast</div>
             <div class="mcard-value {c_cls}">₹{predicted_price:,.2f}</div>
-            <div class="mcard-sub">TOMORROW · {arrow} {abs(change_pct):.2f}%</div>
+            <div class="mcard-sub">Tomorrow · {arrow} {abs(change_pct):.2f}%</div>
         </div>
         <div class="mcard">
-            <div class="mcard-label">Expected Change</div>
-            <div class="mcard-value {c_cls}">{'+' if change_pct>0 else ''}{change_pct:.2f}%</div>
+            <div class="mcard-label">Expected Move</div>
+            <div class="mcard-value {c_cls}">{'+' if change_pct > 0 else ''}{change_pct:.2f}%</div>
             <div class="mcard-sub">{trend}</div>
         </div>
         <div class="mcard">
-            <div class="mcard-label">Volume · ATR</div>
+            <div class="mcard-label">Volume</div>
             <div class="mcard-value c-gold">{vol_val/1e6:.1f}M</div>
             <div class="mcard-sub">ATR(14) · {atr_val:.2f}</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ============================================================
-    #   INDICATORS
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ Technical Indicators</div>', unsafe_allow_html=True)
-    rsi_col  = "#39ff14" if rsi_val < 30 else "#ff2d55" if rsi_val > 70 else "#ffd60a"
-    macd_col = "#39ff14" if macd_val > 0 else "#ff2d55"
-    sig_str  = "STRONG" if abs(change_pct) > 1.5 else "MODERATE" if abs(change_pct) > 0.3 else "WEAK"
-    sig_col  = "#39ff14" if sig_str == "STRONG" else "#ffd60a" if sig_str == "MODERATE" else "#ff2d55"
+    # ── Indicators ───────────────────────────────────────────
+    sec("Technical Indicators")
+    rsi_col  = "#2d7a3a" if rsi_val < 30 else "#b94040" if rsi_val > 70 else "#8a6020"
+    macd_col = "#2d7a3a" if macd_val > 0 else "#b94040"
+    sig_str  = "Strong" if abs(change_pct) > 1.5 else "Moderate" if abs(change_pct) > 0.3 else "Weak"
+    sig_col  = "#2d7a3a" if sig_str == "Strong" else "#8a6020" if sig_str == "Moderate" else "#b94040"
     macd_pct = min(abs(macd_val) / max(abs(df['MACD'].max()), 0.001) * 100, 100)
 
     st.markdown(f"""
     <div class="ind-row">
         <div class="ind-card">
-            <div class="ind-label">RSI · Relative Strength Index (14)</div>
+            <div class="ind-label">RSI · Relative Strength (14)</div>
             <div class="ind-value" style="color:{rsi_col}">{rsi_val:.1f}</div>
-            <div class="ind-bar-bg"><div class="ind-bar-fill" style="width:{rsi_val:.0f}%;background:{rsi_col}"></div></div>
-            <div class="ind-status" style="color:{rsi_col}">{rsi_status} · {'above 70 = overbought' if rsi_val>70 else 'below 30 = oversold' if rsi_val<30 else 'healthy zone 30–70'}</div>
+            <div class="ind-bar-bg">
+                <div class="ind-bar-fill" style="width:{rsi_val:.0f}%;background:{rsi_col};opacity:0.7"></div>
+            </div>
+            <div class="ind-status" style="color:{rsi_col}">{rsi_status} · {'Overbought above 70' if rsi_val > 70 else 'Oversold below 30' if rsi_val < 30 else 'Healthy range 30–70'}</div>
         </div>
         <div class="ind-card">
-            <div class="ind-label">MACD · Moving Average Convergence</div>
+            <div class="ind-label">MACD · Momentum Trend</div>
             <div class="ind-value" style="color:{macd_col}">{macd_val:+.3f}</div>
-            <div class="ind-bar-bg"><div class="ind-bar-fill" style="width:{macd_pct:.0f}%;background:{macd_col}"></div></div>
-            <div class="ind-status" style="color:{macd_col}">{macd_status} MOMENTUM · {'price rising' if macd_val>0 else 'price falling'}</div>
+            <div class="ind-bar-bg">
+                <div class="ind-bar-fill" style="width:{macd_pct:.0f}%;background:{macd_col};opacity:0.7"></div>
+            </div>
+            <div class="ind-status" style="color:{macd_col}">{macd_status} · {'Upward momentum' if macd_val > 0 else 'Downward momentum'}</div>
         </div>
         <div class="ind-card">
-            <div class="ind-label">LSTM · Signal Confidence</div>
+            <div class="ind-label">LSTM · Forecast Confidence</div>
             <div class="ind-value" style="color:{sig_col}">{sig_str}</div>
-            <div class="ind-bar-bg"><div class="ind-bar-fill" style="width:{'85' if sig_str=='STRONG' else '55' if sig_str=='MODERATE' else '25'}%;background:{sig_col}"></div></div>
-            <div class="ind-status" style="color:{sig_col}">BASED ON {change_pct:+.2f}% PREDICTED DELTA</div>
+            <div class="ind-bar-bg">
+                <div class="ind-bar-fill" style="width:{'85' if sig_str == 'Strong' else '50' if sig_str == 'Moderate' else '22'}%;background:{sig_col};opacity:0.7"></div>
+            </div>
+            <div class="ind-status" style="color:{sig_col}">Based on {change_pct:+.2f}% predicted delta</div>
         </div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ============================================================
-    #   AI EXPLANATION
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ AI Analysis · Groq LLaMA 3.3</div>', unsafe_allow_html=True)
+    # ── AI Explanation ────────────────────────────────────────
+    sec("AI Analysis · Groq LLaMA 3.3")
+    # Format explanation into proper paragraphs
+    explanation_html = "".join(
+        f"<p>{para.strip()}</p>"
+        for para in explanation.replace("\n\n", "\n").split("\n")
+        if para.strip()
+    )
     st.markdown(f"""
     <div class="ai-panel">
         <div class="ai-header">
-            <div class="ai-dot"></div>
-            <div class="ai-tag">Groq · LLaMA 3.3 · 70B Versatile</div>
-            <div class="ai-model">temp=0.7 · max_tokens=512</div>
+            <span class="ai-badge">Groq · LLaMA 3.3 · 70B</span>
+            <span class="ai-model-tag">Plain-English Explanation</span>
         </div>
-        <div class="ai-body">{explanation}</div>
+        <div class="ai-body">{explanation_html}</div>
     </div>
     """, unsafe_allow_html=True)
 
-    # ============================================================
-    #   CHART 1 — FULL TECHNICAL
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ Full Technical Chart</div>', unsafe_allow_html=True)
-    st.markdown('<div class="chart-box">', unsafe_allow_html=True)
+    # ── Chart 1: Full Technical ───────────────────────────────
+    sec("Full Technical Chart")
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
 
     fig1 = make_subplots(rows=3, cols=1, shared_xaxes=True,
                          row_heights=[0.58, 0.21, 0.21], vertical_spacing=0.04)
     fig1.add_trace(go.Candlestick(
         x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'],
-        increasing=dict(line=dict(color='#39ff14', width=1), fillcolor='rgba(57,255,20,0.7)'),
-        decreasing=dict(line=dict(color='#ff2d55', width=1), fillcolor='rgba(255,45,85,0.7)'),
+        increasing=dict(line=dict(color='#2d5a3d', width=1), fillcolor='rgba(45,90,61,0.75)'),
+        decreasing=dict(line=dict(color='#b94040', width=1), fillcolor='rgba(185,64,64,0.75)'),
         name="OHLC"), row=1, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['BB_high'],
-        line=dict(color='rgba(0,229,255,0.22)', width=1, dash='dot'), showlegend=False), row=1, col=1)
+        line=dict(color='rgba(201,151,58,0.3)', width=1, dash='dot'), showlegend=False), row=1, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['BB_low'],
-        fill='tonexty', fillcolor='rgba(0,229,255,0.035)',
-        line=dict(color='rgba(0,229,255,0.22)', width=1, dash='dot'), showlegend=False), row=1, col=1)
+        fill='tonexty', fillcolor='rgba(201,151,58,0.04)',
+        line=dict(color='rgba(201,151,58,0.3)', width=1, dash='dot'), showlegend=False), row=1, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['EMA_20'],
-        line=dict(color='#ffd60a', width=1.5), name="EMA 20"), row=1, col=1)
+        line=dict(color='#c9973a', width=1.5), name="EMA 20"), row=1, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['RSI'],
-        line=dict(color='#aa88ff', width=1.5), name="RSI",
-        fill='tozeroy', fillcolor='rgba(170,136,255,0.04)'), row=2, col=1)
-    fig1.add_hline(y=70, line_dash="dot", line_color="rgba(255,45,85,0.45)",  line_width=1, row=2, col=1)
-    fig1.add_hline(y=30, line_dash="dot", line_color="rgba(57,255,20,0.45)",  line_width=1, row=2, col=1)
-    hist_colors = ['#39ff14' if v >= 0 else '#ff2d55' for v in df['MACD_hist']]
+        line=dict(color='#3d7a52', width=1.5), name="RSI",
+        fill='tozeroy', fillcolor='rgba(61,122,82,0.05)'), row=2, col=1)
+    fig1.add_hline(y=70, line_dash="dot", line_color="rgba(185,64,64,0.4)",  line_width=1, row=2, col=1)
+    fig1.add_hline(y=30, line_dash="dot", line_color="rgba(45,122,58,0.4)",  line_width=1, row=2, col=1)
+    hist_colors = ['#2d5a3d' if v >= 0 else '#b94040' for v in df['MACD_hist']]
     fig1.add_trace(go.Bar(x=df.index, y=df['MACD_hist'],
-        marker_color=hist_colors, name="Hist", opacity=0.55), row=3, col=1)
+        marker_color=hist_colors, name="Histogram", opacity=0.6), row=3, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['MACD'],
-        line=dict(color='#00e5ff', width=1.5), name="MACD"), row=3, col=1)
+        line=dict(color='#1a3a2a', width=1.5), name="MACD"), row=3, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['MACD_signal'],
-        line=dict(color='#ff6b35', width=1.5), name="Signal"), row=3, col=1)
+        line=dict(color='#c9973a', width=1.5), name="Signal"), row=3, col=1)
 
     ly1 = plotly_layout(680)
     ly1['xaxis_rangeslider_visible'] = False
@@ -559,106 +808,102 @@ if run:
     st.plotly_chart(fig1, use_container_width=True, config=dict(displayModeBar=False))
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ============================================================
-    #   CHART 2 — PRICE + PREDICTION
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ Price Forecast · LSTM Next-Day</div>', unsafe_allow_html=True)
-    st.markdown('<div class="chart-box">', unsafe_allow_html=True)
+    # ── Chart 2: Price + Prediction ──────────────────────────
+    sec("Price Forecast · LSTM Next-Day")
+    st.markdown('<div class="chart-card">', unsafe_allow_html=True)
 
     last_n = df.tail(45)
     pred_x = [last_n.index[-1] + pd.Timedelta(days=1)]
 
     fig2 = go.Figure()
     fig2.add_trace(go.Scatter(
-        x=last_n.index, y=last_n['Close'], mode='lines', name='Close',
-        line=dict(color='#00e5ff', width=2),
-        fill='tozeroy', fillcolor='rgba(0,229,255,0.04)'
+        x=last_n.index, y=last_n['Close'], mode='lines', name='Close Price',
+        line=dict(color='#1a3a2a', width=2),
+        fill='tozeroy', fillcolor='rgba(26,58,42,0.04)'
     ))
     fig2.add_trace(go.Scatter(
         x=last_n.index, y=last_n['EMA_20'], mode='lines', name='EMA 20',
-        line=dict(color='#ffd60a', width=1, dash='dot')
+        line=dict(color='#c9973a', width=1.2, dash='dot')
     ))
     fig2.add_trace(go.Scatter(
         x=[last_n.index[-1], pred_x[0]],
         y=[last_n['Close'].iloc[-1], predicted_price],
         mode='lines', showlegend=False,
-        line=dict(color='rgba(255,107,53,0.5)', width=1.5, dash='dash')
+        line=dict(color='rgba(201,151,58,0.5)', width=1.5, dash='dash')
     ))
     fig2.add_trace(go.Scatter(
         x=pred_x, y=[predicted_price], mode='markers+text',
-        marker=dict(size=18, color='#ff6b35', symbol='star',
-                    line=dict(color='#ffd60a', width=2)),
+        marker=dict(size=14, color='#c9973a', symbol='diamond',
+                    line=dict(color='#8a6020', width=2)),
         text=[f"  ₹{predicted_price:,.2f}"],
         textposition="middle right",
-        textfont=dict(family="Share Tech Mono", size=12, color="#ff6b35"),
-        name='LSTM Prediction'
+        textfont=dict(family="DM Mono", size=12, color="#8a6020"),
+        name='LSTM Forecast'
     ))
     fig2.add_hline(y=current_price,
-        line_dash="dot", line_color="rgba(0,229,255,0.3)", line_width=1,
+        line_dash="dot", line_color="rgba(26,58,42,0.25)", line_width=1,
         annotation_text=f"  Current ₹{current_price:,.2f}",
-        annotation_font=dict(family="Share Tech Mono", size=10, color="rgba(0,229,255,0.5)"),
+        annotation_font=dict(family="DM Mono", size=10, color="rgba(26,58,42,0.5)"),
         annotation_position="left")
     fig2.update_layout(**plotly_layout(380))
     st.plotly_chart(fig2, use_container_width=True, config=dict(displayModeBar=False))
     st.markdown('</div>', unsafe_allow_html=True)
 
-    # ============================================================
-    #   CHART 3 + 4 — VOLUME & ATR
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ Volume · Volatility</div>', unsafe_allow_html=True)
+    # ── Chart 3 + 4: Volume & ATR ────────────────────────────
+    sec("Volume · Volatility")
     ca, cb = st.columns(2)
 
     with ca:
-        st.markdown('<div class="chart-box">', unsafe_allow_html=True)
-        vol_colors = ['#39ff14' if c >= o else '#ff2d55'
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
+        vol_colors = ['#2d5a3d' if c >= o else '#b94040'
                       for c, o in zip(last_n['Close'], last_n['Open'])]
         fig3 = go.Figure(go.Bar(
             x=last_n.index, y=last_n['Volume'],
-            marker_color=vol_colors, opacity=0.75, name='Volume'
+            marker_color=vol_colors, opacity=0.7, name='Volume'
         ))
         fig3.update_layout(**plotly_layout(260))
         st.plotly_chart(fig3, use_container_width=True, config=dict(displayModeBar=False))
         st.markdown('</div>', unsafe_allow_html=True)
 
     with cb:
-        st.markdown('<div class="chart-box">', unsafe_allow_html=True)
+        st.markdown('<div class="chart-card">', unsafe_allow_html=True)
         fig4 = go.Figure(go.Scatter(
             x=df.index, y=df['ATR'],
-            line=dict(color='#ff6b35', width=1.5),
-            fill='tozeroy', fillcolor='rgba(255,107,53,0.06)',
+            line=dict(color='#c9973a', width=1.5),
+            fill='tozeroy', fillcolor='rgba(201,151,58,0.06)',
             name='ATR(14)'
         ))
         fig4.update_layout(**plotly_layout(260))
         st.plotly_chart(fig4, use_container_width=True, config=dict(displayModeBar=False))
         st.markdown('</div>', unsafe_allow_html=True)
 
-    # ============================================================
-    #   RAW DATA TABLE
-    # ============================================================
-    st.markdown('<div class="sec-label">◈ Raw Data · Last 10 Sessions</div>', unsafe_allow_html=True)
-    tbl = df[['Open','High','Low','Close','Volume','RSI','MACD','EMA_20','ATR']].tail(10).copy()
+    # ── Raw Data Table ────────────────────────────────────────
+    sec("Raw Data · Last 10 Sessions")
+    tbl = df[['Open', 'High', 'Low', 'Close', 'Volume', 'RSI', 'MACD', 'EMA_20', 'ATR']].tail(10).copy()
     tbl.index = tbl.index.strftime('%d %b %Y')
     tbl = tbl.round(2)
     st.dataframe(tbl, use_container_width=True, height=330)
 
-    # ============================================================
-    #   FOOTER
-    # ============================================================
+    # ── Footer ────────────────────────────────────────────────
     st.markdown("""
     <div class="app-footer">
         StockSense AI · LSTM + Groq LLaMA 3.3 · NSE Data via yFinance ·
-        Not financial advice · Educational use only
+        Not financial advice · For educational use only
     </div>
     """, unsafe_allow_html=True)
 
 
 # ============================================================
-#   IDLE STATE
+#   IDLE
 # ============================================================
 else:
     st.markdown("""
     <div class="idle-wrap">
-        <div class="idle-ring"><div class="idle-ring-inner"></div></div>
-        <div class="idle-text">Select a symbol above<br>and execute analysis</div>
+        <div class="idle-icon">◆</div>
+        <div class="idle-title">Ready to analyse</div>
+        <div class="idle-sub">
+            Select a company and time window above,
+            then click Run Analysis to get started.
+        </div>
     </div>
     """, unsafe_allow_html=True)
