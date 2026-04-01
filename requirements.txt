@@ -1,0 +1,10 @@
+streamlit
+plotly
+yfinance
+ta
+tensorflow
+groq
+scikit-learn
+pandas
+numpy
+ 
