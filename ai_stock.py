@@ -7,8 +7,6 @@ Original file is located at
     https://colab.research.google.com/drive/1idKEGpMQTL9flzVbEDMVUmJFx3hldMf8
 """
 
-from google.colab import userdata
-userdata.get('GROQ_API_KEY')
 
 !pip install yfinance groq ta torch plotly pandas numpy scikit-learn
 
