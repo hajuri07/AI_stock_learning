@@ -1,371 +1,163 @@
-# 📈 AI Stock Predictor & Analyst
+# 📈 StockSense AI
+**Stock Market Analyzer using LSTM + Groq LLaMA 3.3 + Streamlit**
 
-An AI-powered system that predicts stock prices using Machine Learning and generates human-readable explanations using a Large Language Model.
-
-This project combines **financial data analysis**, **time-series prediction**, and **Generative AI** to create an automated **AI financial analyst**.
-
----
-
-# 🚀 Features
-
-### 📊 Stock Price Prediction
-- Uses historical stock market data
-- Implements a **sliding window time-series prediction**
-- Predicts **future stock price movements**
-
-### 📉 Trend Detection
-Based on predicted price change, the system classifies the trend into:
-
-- 📈 Upward
-- 📉 Downward
-- ➡️ Stable
-
-### 🧠 AI Explanation
-The prediction results are passed to an LLM which generates a **natural language explanation** of the stock behavior.
-
-Example output:
-# 📈 AI Stock Predictor & Analyst
-
-An AI-powered system that predicts stock prices using Machine Learning and generates human-readable explanations using a Large Language Model.
-
-This project combines **financial data analysis**, **time-series prediction**, and **Generative AI** to create an automated **AI financial analyst**.
+![Language](https://img.shields.io/badge/Language-Python-blue?style=flat-square) ![ML](https://img.shields.io/badge/Model-LSTM-green?style=flat-square) ![LLM](https://img.shields.io/badge/LLM-Groq%20LLaMA%203.3-orange?style=flat-square) ![UI](https://img.shields.io/badge/UI-Streamlit-red?style=flat-square)
 
 ---
 
-# 🚀 Features
+## 1. Project Overview
 
-### 📊 Stock Price Prediction
-- Uses historical stock market data
-- Implements a **sliding window time-series prediction**
-- Predicts **future stock price movements**
+StockSense AI is a real-time stock market analyzer for **NSE Indian stocks** built using Python. It fetches live market data, computes technical indicators, trains an LSTM model to predict the next day's price, and uses **Groq LLaMA 3.3** to explain everything in plain English — even for someone with zero finance knowledge.
 
-### 📉 Trend Detection
-Based on predicted price change, the system classifies the trend into:
-
-- 📈 Upward
-- 📉 Downward
-- ➡️ Stable
-
-### 🧠 AI Explanation
-The prediction results are passed to an LLM which generates a **natural language explanation** of the stock behavior.
-
-Example output:
+> No paid APIs. No subscriptions. Just a free Groq key and you're good to go.
 
 ---
 
-# 🏗 System Architecture
+## 2. Features
 
-
-Stock Market Data (Yahoo Finance)
-│
-▼
-Data Preprocessing
-│
-▼
-Machine Learning Model
-(Sliding Window Prediction)
-│
-▼
-Trend Detection
-(Up / Down / Stable)
-│
-▼
-LLM Explanation Engine
-(Groq API)
-│
-▼
-Final AI Analysis Output
+| Feature | What it Does |
+|---|---|
+| **Live Data** | Fetches real-time OHLCV data from Yahoo Finance via `yfinance` |
+| **Technical Indicators** | RSI, MACD, Bollinger Bands, EMA(20), ATR — all computed automatically |
+| **LSTM Prediction** | Trains a 2-layer LSTM model and predicts next day's closing price |
+| **AI Explanation** | Groq LLaMA 3.3 explains the prediction in simple language |
+| **Interactive Charts** | Candlestick, price forecast, volume, ATR — all with dark terminal UI |
+| **Your API Key** | You paste your own Groq key in the sidebar — nothing is hardcoded |
 
 ---
 
-# 🧠 AI Model
+## 3. Project Structure
 
-The explanation engine uses a Large Language Model.
-
-**Model:** `llama-3.3-70b-versatile`  
-**Provider:** Groq
-
-This model was selected because it provides:
-
-- Strong reasoning capability
-- Fast inference
-- High-quality natural language explanations
-- Good performance for analytical tasks
-
-The model analyzes:
-- Current stock price
-- Predicted price
-- Percentage change
-- Market trend
-
-and generates a human-readable explanation.
+| File | Purpose |
+|---|---|
+| `app.py` | Streamlit UI — all charts, layout, sidebar, metric cards |
+| `predictor.py` | All ML logic — data fetching, indicators, LSTM, LLM call |
+| `requirements.txt` | All dependencies for deployment |
 
 ---
 
-# 📊 Data Source
+## 4. Supported Stocks
 
-Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
-
-Data features include:
-
-- Open
-- High
-- Low
-- Close
-- Volume
-
-Example companies used in this project:
-
----
-
-# 🧠 AI Model
-
-The explanation engine uses a Large Language Model.
-
-**Model:** `llama-3.3-70b-versatile`  
-**Provider:** Groq
-
-This model was selected because it provides:
-
-- Strong reasoning capability
-- Fast inference
-- High-quality natural language explanations
-- Good performance for analytical tasks
-
-The model analyzes:
-- Current stock price
-- Predicted price
-- Percentage change
-- Market trend
-
-and generates a human-readable explanation.
+| Symbol | Company |
+|---|---|
+| `RELIANCE.NS` | Reliance Industries |
+| `TCS.NS` | Tata Consultancy Services |
+| `INFY.NS` | Infosys |
+| `HDFCBANK.NS` | HDFC Bank |
+| `ICICIBANK.NS` | ICICI Bank |
+| `ITC.NS` | ITC Limited |
+| `LT.NS` | Larsen & Toubro |
+| `BHARTIARTL.NS` | Bharti Airtel |
+| `SBIN.NS` | State Bank of India |
 
 ---
 
-# 📊 Data Source
+## 5. Technical Indicators Used
 
-Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
-
-Data features include:
-
-- Open
-- High
-- Low
-- Close
-- Volume
-
-Example companies used in this project:
+| Indicator | What it Tells Us |
+|---|---|
+| **RSI (14)** | Momentum — above 70 = overbought, below 30 = oversold |
+| **MACD** | Trend direction — positive = bullish, negative = bearish |
+| **Bollinger Bands (20)** | Volatility range — price bounces between upper and lower bands |
+| **EMA (20)** | Smoothed trend baseline — 20-day exponential moving average |
+| **ATR (14)** | Average True Range — measures how much the price moves daily |
 
 ---
 
-# 🧠 AI Model
+## 6. LSTM Model Architecture
 
-The explanation engine uses a Large Language Model.
+```
+Input → LSTM(64, return_sequences=True) → Dropout(0.2)
+      → LSTM(64) → Dropout(0.2) → Dense(1) → Predicted Price
+```
 
-**Model:** `llama-3.3-70b-versatile`  
-**Provider:** Groq
-
-This model was selected because it provides:
-
-- Strong reasoning capability
-- Fast inference
-- High-quality natural language explanations
-- Good performance for analytical tasks
-
-The model analyzes:
-- Current stock price
-- Predicted price
-- Percentage change
-- Market trend
-
-and generates a human-readable explanation.
+- **Lookback window:** 10 days
+- **Epochs:** 100 (with early stopping)
+- **Batch size:** 15
+- **Optimizer:** Adam
+- **Loss:** MSE
+- **Normalization:** MinMaxScaler — scaled to 0–1 before training, denormalized after prediction
 
 ---
 
-# 📊 Data Source
+## 7. How to Run Locally
 
-Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
+**Requirements**
+- Python 3.9+
+- Free Groq API key from [console.groq.com](https://console.groq.com)
 
-Data features include:
-
-- Open
-- High
-- Low
-- Close
-- Volume
-
-Example companies used in this project:
-
----
-
-# 🧠 AI Model
-
-The explanation engine uses a Large Language Model.
-
-**Model:** `llama-3.3-70b-versatile`  
-**Provider:** Groq
-
-This model was selected because it provides:
-
-- Strong reasoning capability
-- Fast inference
-- High-quality natural language explanations
-- Good performance for analytical tasks
-
-The model analyzes:
-- Current stock price
-- Predicted price
-- Percentage change
-- Market trend
-
-and generates a human-readable explanation.
-
----
-
-# 📊 Data Source
-
-Stock data is fetched from **Yahoo Finance** using the `yfinance` library.
-
-Data features include:
-
-- Open
-- High
-- Low
-- Close
-- Volume
-
-Example companies used in this project:
-RELIANCE
-TCS
-INFY
-HDFCBANK
-ICICIBANK
-TATAMOTORS
-ITC
-LT
-BHARTIARTL
-SBIN
-
----
-
-# ⚙️ Machine Learning Approach
-
-The model uses a **sliding window time-series technique**.
-
-Example:
-Day1 Day2 Day3 Day4 Day5 → Predict Day6
-
-
-Training sample example:
-[2140, 2139, 2138, 2136, 2137] → 2133
-
-
-This approach helps the model learn **short-term market patterns**.
-
----
-
-# 📉 Trend Classification
-
-Trend is determined using percentage change between predicted and current price.
-
-
-change % = (predicted_price - current_price) / current_price * 100
-
-
-Trend thresholds:
-
-
-+1% → Upward 📈
-< -1% → Downward 📉
-Else → Stable ➡️
-
-
-These thresholds help reduce **normal market noise**.
-
----
-
-# 🛠 Tech Stack
-
-### Programming Language
-- Python
-
-### Libraries
-- NumPy
-- Pandas
-- Scikit-learn
-- yfinance
-
-### AI / LLM
-- Groq API
-- llama-3.3-70b-versatile
-
----
-
-# 📦 Installation
-
-Clone the repository:
-
-
-git clone https://github.com/yourusername/ai-stock-analyst.git
-
-
-Navigate to the project directory:
-
-
-cd ai-stock-analyst
-
-
-Install dependencies:
-
-
+**Install dependencies**
+```bash
 pip install -r requirements.txt
+```
 
+**Run**
+```bash
+streamlit run app.py
+```
 
----
-
-# 🔑 API Setup
-
-Create a `.env` file in the root directory and add your Groq API key:
-
-
-GROQ_API_KEY=your_api_key_here
-
+Then open `http://localhost:8501` in your browser, paste your Groq key in the sidebar, select a stock and hit **Execute Analysis**.
 
 ---
 
-# ▶️ Running the Project
+## 8. Deploy on Streamlit Cloud (Free)
 
-Run the main script:
-
-
-python main.py
-
-
-Example output:
-
-
-Stock: ICICI Bank
-Current Price: 2137
-Predicted Price: 2133
-Trend: Stable
-
-AI Analysis:
-The predicted price shows minimal deviation from the current market
-price, suggesting balanced market sentiment with no strong upward
-or downward momentum in the short term.
-
+1. Push all 3 files to a GitHub repo
+2. Go to [share.streamlit.io](https://share.streamlit.io)
+3. Connect your GitHub and select the repo
+4. Set `app.py` as the entry point
+5. Done — live public URL in minutes
 
 ---
 
-# 🔮 Future Improvements
+## 9. Run on Google Colab
 
-Possible enhancements:
+```python
+!pip install streamlit pyngrok
 
-- LSTM or Transformer-based prediction models
-- Technical indicators (RSI, MACD, Moving Averages)
-- Real-time dashboard using Streamlit
-- Portfolio-level analysis
-- AI trading signals
+from pyngrok import ngrok
+!streamlit run app.py &
+url = ngrok.connect(8501)
+print(url)
+```
+
+Opens a public URL — no local machine needed.
 
 ---
 
+## 10. Sample Output
+
+```
+=== StockSense AI ===
+FETCH  | Received 124 rows · 2024-10-01 → 2025-04-01
+CALC   | RSI · MACD · BB · EMA · ATR ready
+LSTM   | Training complete · Prediction → ₹1423.50
+LLM    | AI explanation generated successfully
+DONE   | Dashboard rendered ↓
+
+--- Results ---
+Symbol:         ICICIBANK.NS
+Current Price:  ₹1401.20
+Predicted:      ₹1423.50
+Change:         +1.59%
+Trend:          Upward 📈
+RSI:            58.3  → NEUTRAL
+MACD:           4.21  → BULLISH
+```
+
+---
+
+## 11. Summary
+
+- ✅ Fetches real-time NSE stock data via yFinance
+- ✅ Computes 5 technical indicators automatically
+- ✅ Trains LSTM from scratch on live price history
+- ✅ Predicts next day closing price
+- ✅ Groq LLaMA 3.3 explains results in plain English
+- ✅ Bloomberg-style dark terminal UI built with Streamlit
+- ✅ User provides their own Groq key — nothing hardcoded
+- ✅ Free to deploy on Streamlit Cloud
+
+---
+
+*StockSense AI — Not financial advice · Educational use only*
