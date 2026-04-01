@@ -159,7 +159,7 @@ def predict(symbol, data, groq_api_key=""):
         "symbol":          symbol,
         "current_price":   round(float(current_price), 2),
         "predicted_price": round(float(predicted_price), 2),
-        "change_percent":  round(float(change_pct), 2),
+        "change_pct":  round(float(change_pct), 2),
         "trend":           trend,
         "rsi":             round(float(rsi), 2),
         "macd":            round(float(macd), 2),
