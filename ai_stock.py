@@ -5,10 +5,8 @@ import pandas as pd
 import yfinance as yf
 import ta
 import json
-from sklearn.preprocessing import MinMaxScaler
-from tensorflow.keras.models import Sequential
-from tensorflow.keras.layers import Dense, LSTM, Dropout
-from groq import Groq
+
+
 
 # ── Constants ──────────────────────────────────────────────
 LSTM_LOOKBACK = 10
@@ -61,6 +59,9 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
 
 # ── Step 3: Train LSTM ──────────────────────────────────────
 def trainLSTM(prices, lookback=LSTM_LOOKBACK, epochs=LSTM_EPOCHS):
+    from tensorflow.keras.models import Sequential
+    from tensorflow.keras.layers import Dense, LSTM, Dropout
+    from sklearn.preprocessing import MinMaxScaler
     scaler = MinMaxScaler()
     scaled = scaler.fit_transform(prices.reshape(-1, 1))
     x, y   = [], []
@@ -85,8 +86,9 @@ def trainLSTM(prices, lookback=LSTM_LOOKBACK, epochs=LSTM_EPOCHS):
 
 
 # ── Step 4: LLM Explanation ────────────────────────────────
-def get_llm_explanation(groq_api_key, symbol, current_price,
-                         lstm_price, change_pct, trend, rsi, macd):
+def get_llm_explanation(groq_api_key, symbol, current_price,lstm_price, change_pct, trend, rsi, macd):
+    from groq import Groq
+                             
     if not groq_api_key or groq_api_key.strip() == "":
         return "⚠️ No Groq API key provided. Enter your key in the sidebar to enable AI explanations."
     try:
