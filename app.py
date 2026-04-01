@@ -1,11 +1,3 @@
-# ============================================================
-#   APP.PY — Streamlit UI only
-#   Run:    streamlit run app.py
-#   Deploy: streamlit.io (free)
-#
-#   pip install streamlit plotly yfinance ta tensorflow groq scikit-learn
-# ============================================================
-
 import streamlit as st
 import plotly.graph_objects as go
 from plotly.subplots import make_subplots
