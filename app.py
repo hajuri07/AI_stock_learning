@@ -1,6 +1,6 @@
 # ============================================================
 #   APP.PY — StockSense AI · Streamlit UI
-#   Theme: Warm Editorial Luxury — deep green, cream, gold
+#   Theme: Ocean Dark — deep navy, black, gold
 #   Run:   streamlit run app.py
 # ============================================================
 
@@ -23,26 +23,32 @@ st.set_page_config(
 )
 
 # ============================================================
-#   CSS — Editorial Luxury Theme
+#   CSS — Ocean Dark Theme
 # ============================================================
 st.markdown("""
 <style>
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=DM+Sans:wght@300;400;500&family=DM+Mono:wght@400;500&display=swap');
 
 :root {
-    --cream:     #faf7f2;
-    --cream2:    #f2ede4;
-    --green:     #1a3a2a;
-    --green2:    #2d5a3d;
-    --green3:    #3d7a52;
-    --gold:      #c9973a;
-    --gold2:     #e8b84b;
-    --red:       #b94040;
-    --text:      #1a1a1a;
-    --text2:     #4a4a4a;
-    --text3:     #7a7a7a;
-    --border:    rgba(26,58,42,0.12);
-    --border2:   rgba(26,58,42,0.06);
+    --bg:        #0a0e1a;
+    --bg2:       #0f1524;
+    --bg3:       #141929;
+    --card:      #111827;
+    --card2:     #1a2235;
+    --navy:      #0d1b3e;
+    --blue:      #1e3a6e;
+    --blue2:     #2a52a0;
+    --blue3:     #3d6fc4;
+    --gold:      #d4a843;
+    --gold2:     #e8c46a;
+    --gold3:     #f5d98a;
+    --up:        #00c896;
+    --down:      #ff4d6a;
+    --text:      #e8eaf2;
+    --text2:     #9aa3bb;
+    --text3:     #5a6480;
+    --border:    rgba(61,111,196,0.18);
+    --border2:   rgba(61,111,196,0.08);
     --serif:     'Playfair Display', Georgia, serif;
     --sans:      'DM Sans', sans-serif;
     --mono:      'DM Mono', monospace;
@@ -53,7 +59,7 @@ st.markdown("""
 html, body,
 [data-testid="stAppViewContainer"],
 [data-testid="stMain"], .main {
-    background: var(--cream) !important;
+    background: var(--bg) !important;
     color: var(--text) !important;
     font-family: var(--sans) !important;
 }
@@ -65,22 +71,22 @@ html, body,
 .block-container { padding: 0 3rem 4rem !important; max-width: 1400px !important; }
 
 ::-webkit-scrollbar { width: 4px; }
-::-webkit-scrollbar-track { background: var(--cream2); }
-::-webkit-scrollbar-thumb { background: var(--green3); border-radius: 2px; }
+::-webkit-scrollbar-track { background: var(--bg2); }
+::-webkit-scrollbar-thumb { background: var(--blue2); border-radius: 2px; }
 
 /* ── SIDEBAR ── */
 [data-testid="stSidebar"] {
-    background: var(--green) !important;
-    border-right: none !important;
+    background: var(--bg2) !important;
+    border-right: 1px solid var(--border) !important;
 }
 [data-testid="stSidebar"] * {
-    color: rgba(250,247,242,0.85) !important;
+    color: var(--text2) !important;
     font-family: var(--sans) !important;
 }
 [data-testid="stSidebar"] .stTextInput input {
-    background: rgba(250,247,242,0.08) !important;
-    border: 1px solid rgba(250,247,242,0.2) !important;
-    color: var(--cream) !important;
+    background: rgba(61,111,196,0.08) !important;
+    border: 1px solid var(--border) !important;
+    color: var(--text) !important;
     font-family: var(--mono) !important;
     font-size: 0.8rem !important;
     border-radius: 4px !important;
@@ -89,16 +95,18 @@ html, body,
     font-size: 0.65rem !important;
     letter-spacing: 0.15em !important;
     text-transform: uppercase !important;
-    color: rgba(250,247,242,0.5) !important;
+    color: var(--text3) !important;
     font-family: var(--mono) !important;
 }
-.key-ok   { color: #7ec98a; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
-.key-none { color: #e8b84b; font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+.key-ok   { color: var(--up); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
+.key-none { color: var(--gold); font-family: var(--mono); font-size: 0.7rem; letter-spacing: 0.1em; }
 
 /* ── TICKER STRIP ── */
 .ticker-wrap {
     overflow: hidden;
-    background: var(--green);
+    background: var(--bg2);
+    border-top: 1px solid var(--border);
+    border-bottom: 1px solid var(--border);
     padding: 0.55rem 0;
     white-space: nowrap;
 }
@@ -107,13 +115,13 @@ html, body,
     animation: ticker 40s linear infinite;
     font-family: var(--mono);
     font-size: 0.68rem;
-    color: rgba(250,247,242,0.7);
+    color: var(--text3);
     letter-spacing: 0.06em;
 }
 .ticker-inner span { margin: 0 2.5rem; }
-.ticker-inner .up   { color: #7ec98a; }
-.ticker-inner .down { color: #e07070; }
-.ticker-inner .mid  { color: rgba(250,247,242,0.45); }
+.ticker-inner .up   { color: var(--up); }
+.ticker-inner .down { color: var(--down); }
+.ticker-inner .mid  { color: var(--text3); }
 @keyframes ticker { 0%{transform:translateX(0)} 100%{transform:translateX(-50%)} }
 
 /* ── HERO ── */
@@ -134,7 +142,7 @@ html, body,
     font-family: var(--serif);
     font-size: clamp(2.8rem, 6vw, 5rem);
     font-weight: 700;
-    color: var(--green);
+    color: var(--text);
     line-height: 1.05;
     margin-bottom: 0.8rem;
     letter-spacing: -0.01em;
@@ -146,7 +154,7 @@ html, body,
 .hero-sub {
     font-family: var(--sans);
     font-size: 1rem;
-    color: var(--text3);
+    color: var(--text2);
     font-weight: 300;
     letter-spacing: 0.02em;
 }
@@ -159,24 +167,16 @@ html, body,
 
 /* ── SELECTOR PANEL ── */
 .selector-wrap {
-    background: white;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1.8rem 2rem;
     margin-bottom: 2rem;
-    box-shadow: 0 2px 20px rgba(26,58,42,0.06);
-}
-.selector-label {
-    font-family: var(--mono);
-    font-size: 0.6rem;
-    letter-spacing: 0.2em;
-    color: var(--text3);
-    text-transform: uppercase;
-    margin-bottom: 0.5rem;
+    box-shadow: 0 2px 24px rgba(0,0,0,0.4);
 }
 
 [data-testid="stSelectbox"] > div > div {
-    background: var(--cream) !important;
+    background: var(--bg2) !important;
     border: 1px solid var(--border) !important;
     border-radius: 6px !important;
     color: var(--text) !important;
@@ -192,9 +192,9 @@ html, body,
 }
 .stButton > button {
     width: 100% !important;
-    background: var(--green) !important;
-    border: none !important;
-    color: var(--cream) !important;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%) !important;
+    border: 1px solid var(--blue3) !important;
+    color: var(--text) !important;
     font-family: var(--sans) !important;
     font-size: 0.85rem !important;
     font-weight: 500 !important;
@@ -204,16 +204,16 @@ html, body,
     transition: all 0.2s !important;
 }
 .stButton > button:hover {
-    background: var(--green2) !important;
-    box-shadow: 0 4px 16px rgba(26,58,42,0.25) !important;
+    background: linear-gradient(135deg, var(--blue2) 0%, var(--blue3) 100%) !important;
+    box-shadow: 0 4px 20px rgba(61,111,196,0.4) !important;
     transform: translateY(-1px) !important;
 }
 
 /* ── PROCESS LOG ── */
 .process-log {
-    background: white;
+    background: var(--bg2);
     border: 1px solid var(--border);
-    border-left: 3px solid var(--green3);
+    border-left: 3px solid var(--blue3);
     border-radius: 0 6px 6px 0;
     padding: 1rem 1.4rem;
     font-family: var(--mono);
@@ -224,10 +224,10 @@ html, body,
 .log-line { display: flex; align-items: flex-start; gap: 0.8rem; }
 .log-time  { color: var(--text3); min-width: 65px; }
 .log-tag   { padding: 0.05rem 0.5rem; font-size: 0.58rem; letter-spacing: 0.06em; min-width: 52px; text-align: center; border-radius: 3px; }
-.tag-ok    { background: rgba(126,201,138,0.15); color: #2d7a3a; border: 1px solid rgba(126,201,138,0.3); }
-.tag-run   { background: rgba(26,58,42,0.06);   color: var(--green2); border: 1px solid var(--border); }
-.tag-ai    { background: rgba(201,151,58,0.12);  color: #8a6020; border: 1px solid rgba(201,151,58,0.3); }
-.tag-warn  { background: rgba(185,64,64,0.08);   color: var(--red); border: 1px solid rgba(185,64,64,0.2); }
+.tag-ok    { background: rgba(0,200,150,0.12); color: var(--up); border: 1px solid rgba(0,200,150,0.3); }
+.tag-run   { background: rgba(61,111,196,0.1); color: var(--blue3); border: 1px solid var(--border); }
+.tag-ai    { background: rgba(212,168,67,0.12); color: var(--gold); border: 1px solid rgba(212,168,67,0.3); }
+.tag-warn  { background: rgba(255,77,106,0.1);  color: var(--down); border: 1px solid rgba(255,77,106,0.25); }
 .log-msg   { color: var(--text2); }
 
 /* ── SECTION HEADER ── */
@@ -266,24 +266,25 @@ html, body,
     margin: 1rem 0;
 }
 .mcard {
-    background: white;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1.4rem 1.6rem;
     animation: fadeUp 0.4s ease both;
     position: relative;
     overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
 }
 .mcard::before {
     content: '';
     position: absolute;
     top: 0; left: 0; right: 0;
-    height: 3px;
+    height: 2px;
 }
-.mcard:nth-child(1)::before { background: var(--green); }
+.mcard:nth-child(1)::before { background: var(--blue3); }
 .mcard:nth-child(2)::before { background: var(--gold); }
-.mcard:nth-child(3)::before { background: var(--green3); }
-.mcard:nth-child(4)::before { background: #8a7a5a; }
+.mcard:nth-child(3)::before { background: var(--up); }
+.mcard:nth-child(4)::before { background: var(--blue2); }
 .mcard:nth-child(1) { animation-delay: 0.05s; }
 .mcard:nth-child(2) { animation-delay: 0.1s; }
 .mcard:nth-child(3) { animation-delay: 0.15s; }
@@ -307,8 +308,8 @@ html, body,
     line-height: 1;
     color: var(--text);
 }
-.mcard-value.c-green { color: var(--green2); }
-.mcard-value.c-red   { color: var(--red); }
+.mcard-value.c-green { color: var(--up); }
+.mcard-value.c-red   { color: var(--down); }
 .mcard-value.c-gold  { color: var(--gold); }
 .mcard-sub {
     font-family: var(--mono);
@@ -326,11 +327,12 @@ html, body,
     margin: 1rem 0;
 }
 .ind-card {
-    background: white;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 1.2rem 1.4rem;
     animation: fadeUp 0.4s ease 0.25s both;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
 }
 .ind-label {
     font-family: var(--mono);
@@ -348,7 +350,7 @@ html, body,
 }
 .ind-bar-bg {
     height: 4px;
-    background: var(--cream2);
+    background: var(--bg2);
     margin: 0.7rem 0 0.4rem;
     border-radius: 2px;
     overflow: hidden;
@@ -368,12 +370,13 @@ html, body,
 
 /* ── AI EXPLANATION PANEL ── */
 .ai-panel {
-    background: white;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 2rem 2.4rem;
     margin: 1rem 0;
     animation: fadeUp 0.5s ease 0.3s both;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
 }
 .ai-header {
     display: flex;
@@ -384,14 +387,15 @@ html, body,
     border-bottom: 1px solid var(--border2);
 }
 .ai-badge {
-    background: var(--green);
-    color: var(--cream) !important;
+    background: linear-gradient(135deg, var(--blue) 0%, var(--blue2) 100%);
+    color: var(--text) !important;
     font-family: var(--mono);
     font-size: 0.58rem;
     letter-spacing: 0.1em;
     padding: 0.25rem 0.7rem;
     border-radius: 3px;
     text-transform: uppercase;
+    border: 1px solid var(--blue3);
 }
 .ai-model-tag {
     font-family: var(--mono);
@@ -412,13 +416,14 @@ html, body,
 
 /* ── CHART CARD ── */
 .chart-card {
-    background: white;
+    background: var(--card);
     border: 1px solid var(--border);
     border-radius: 8px;
     padding: 0.5rem;
     margin-bottom: 1rem;
     animation: fadeUp 0.5s ease 0.2s both;
     overflow: hidden;
+    box-shadow: 0 4px 24px rgba(0,0,0,0.3);
 }
 
 /* ── IDLE STATE ── */
@@ -440,19 +445,19 @@ html, body,
     align-items: center;
     justify-content: center;
     font-size: 1.4rem;
-    color: var(--green3);
-    background: white;
+    color: var(--gold);
+    background: var(--card);
 }
 .idle-title {
     font-family: var(--serif);
     font-size: 1.5rem;
-    color: var(--green);
+    color: var(--text);
     font-weight: 600;
 }
 .idle-sub {
     font-family: var(--sans);
     font-size: 0.875rem;
-    color: var(--text3);
+    color: var(--text2);
     font-weight: 300;
     max-width: 320px;
     line-height: 1.6;
@@ -477,6 +482,10 @@ html, body,
     border-radius: 8px !important;
     overflow: hidden;
 }
+[data-testid="stDataFrame"] * {
+    background: var(--card) !important;
+    color: var(--text2) !important;
+}
 </style>
 """, unsafe_allow_html=True)
 
@@ -488,12 +497,12 @@ with st.sidebar:
     st.markdown("""
     <div style="padding: 2rem 1.5rem 1.5rem;">
         <div style="font-family:'DM Mono',monospace;font-size:0.6rem;letter-spacing:0.25em;
-                    color:rgba(250,247,242,0.4);text-transform:uppercase;margin-bottom:0.5rem">
+                    color:rgba(154,163,187,0.5);text-transform:uppercase;margin-bottom:0.5rem">
             Configuration
         </div>
         <div style="font-family:'Playfair Display',serif;font-size:1.5rem;
-                    color:rgba(250,247,242,0.95);font-weight:600;margin-bottom:1.5rem;
-                    padding-bottom:1.5rem;border-bottom:1px solid rgba(250,247,242,0.1)">
+                    color:#e8eaf2;font-weight:600;margin-bottom:1.5rem;
+                    padding-bottom:1.5rem;border-bottom:1px solid rgba(61,111,196,0.18)">
             StockSense
         </div>
     </div>
@@ -515,9 +524,9 @@ with st.sidebar:
 
     st.markdown("""
     <div style="padding: 1.5rem 1.5rem 0; margin-top:1rem;
-                border-top:1px solid rgba(250,247,242,0.08)">
+                border-top:1px solid rgba(61,111,196,0.12)">
         <div style="font-family:'DM Sans',sans-serif;font-size:0.78rem;
-                    color:rgba(250,247,242,0.35);line-height:1.7;font-weight:300">
+                    color:rgba(154,163,187,0.4);line-height:1.7;font-weight:300">
             Your key is used only for this session and never stored anywhere.
             Get a free key at console.groq.com
         </div>
@@ -593,40 +602,42 @@ ticker_label = selected_name.split("·")[0].strip()
 
 
 # ============================================================
-#   CHART STYLING
+#   CHART STYLING  — ocean dark background, gold accents
 # ============================================================
 def plotly_layout(height=500):
     return dict(
-        paper_bgcolor="rgba(0,0,0,0)",
-        plot_bgcolor="#fdfbf8",
-        font=dict(family="DM Sans, sans-serif", color="#4a4a4a", size=11),
+        paper_bgcolor="#111827",
+        plot_bgcolor="#0f1524",
+        font=dict(family="DM Mono, monospace", color="#9aa3bb", size=11),
         height=height,
         margin=dict(l=12, r=12, t=40, b=12),
         legend=dict(
-            bgcolor="rgba(250,247,242,0.9)",
-            bordercolor="rgba(26,58,42,0.1)",
+            bgcolor="rgba(17,24,39,0.9)",
+            bordercolor="rgba(61,111,196,0.2)",
             borderwidth=1,
-            font=dict(size=10),
+            font=dict(size=10, color="#9aa3bb"),
             orientation="h", yanchor="bottom", y=1.02, xanchor="right", x=1
         ),
         xaxis=dict(
-            gridcolor="rgba(26,58,42,0.06)",
-            zerolinecolor="rgba(26,58,42,0.1)",
+            gridcolor="rgba(61,111,196,0.08)",
+            zerolinecolor="rgba(61,111,196,0.15)",
             showspikes=True,
-            spikecolor="rgba(201,151,58,0.4)",
+            spikecolor="rgba(212,168,67,0.5)",
             spikethickness=1,
-            linecolor="rgba(26,58,42,0.1)"
+            linecolor="rgba(61,111,196,0.2)",
+            tickfont=dict(color="#5a6480", size=10),
         ),
         yaxis=dict(
-            gridcolor="rgba(26,58,42,0.06)",
-            zerolinecolor="rgba(26,58,42,0.1)",
-            linecolor="rgba(26,58,42,0.1)"
+            gridcolor="rgba(61,111,196,0.08)",
+            zerolinecolor="rgba(61,111,196,0.15)",
+            linecolor="rgba(61,111,196,0.2)",
+            tickfont=dict(color="#5a6480", size=10),
         ),
         hovermode="x unified",
         hoverlabel=dict(
-            bgcolor="white",
-            bordercolor="rgba(26,58,42,0.15)",
-            font=dict(family="DM Mono", size=11, color="#1a1a1a")
+            bgcolor="#1a2235",
+            bordercolor="rgba(61,111,196,0.3)",
+            font=dict(family="DM Mono", size=11, color="#e8eaf2")
         )
     )
 
@@ -718,10 +729,10 @@ if run:
 
     # ── Indicators ───────────────────────────────────────────
     sec("Technical Indicators")
-    rsi_col  = "#2d7a3a" if rsi_val < 30 else "#b94040" if rsi_val > 70 else "#8a6020"
-    macd_col = "#2d7a3a" if macd_val > 0 else "#b94040"
+    rsi_col  = "#00c896" if rsi_val < 30 else "#ff4d6a" if rsi_val > 70 else "#d4a843"
+    macd_col = "#00c896" if macd_val > 0 else "#ff4d6a"
     sig_str  = "Strong" if abs(change_pct) > 1.5 else "Moderate" if abs(change_pct) > 0.3 else "Weak"
-    sig_col  = "#2d7a3a" if sig_str == "Strong" else "#8a6020" if sig_str == "Moderate" else "#b94040"
+    sig_col  = "#00c896" if sig_str == "Strong" else "#d4a843" if sig_str == "Moderate" else "#ff4d6a"
     macd_pct = min(abs(macd_val) / max(abs(df['MACD'].max()), 0.001) * 100, 100)
 
     st.markdown(f"""
@@ -730,7 +741,7 @@ if run:
             <div class="ind-label">RSI · Relative Strength (14)</div>
             <div class="ind-value" style="color:{rsi_col}">{rsi_val:.1f}</div>
             <div class="ind-bar-bg">
-                <div class="ind-bar-fill" style="width:{rsi_val:.0f}%;background:{rsi_col};opacity:0.7"></div>
+                <div class="ind-bar-fill" style="width:{rsi_val:.0f}%;background:{rsi_col};opacity:0.8"></div>
             </div>
             <div class="ind-status" style="color:{rsi_col}">{rsi_status} · {'Overbought above 70' if rsi_val > 70 else 'Oversold below 30' if rsi_val < 30 else 'Healthy range 30–70'}</div>
         </div>
@@ -738,7 +749,7 @@ if run:
             <div class="ind-label">MACD · Momentum Trend</div>
             <div class="ind-value" style="color:{macd_col}">{macd_val:+.3f}</div>
             <div class="ind-bar-bg">
-                <div class="ind-bar-fill" style="width:{macd_pct:.0f}%;background:{macd_col};opacity:0.7"></div>
+                <div class="ind-bar-fill" style="width:{macd_pct:.0f}%;background:{macd_col};opacity:0.8"></div>
             </div>
             <div class="ind-status" style="color:{macd_col}">{macd_status} · {'Upward momentum' if macd_val > 0 else 'Downward momentum'}</div>
         </div>
@@ -746,7 +757,7 @@ if run:
             <div class="ind-label">LSTM · Forecast Confidence</div>
             <div class="ind-value" style="color:{sig_col}">{sig_str}</div>
             <div class="ind-bar-bg">
-                <div class="ind-bar-fill" style="width:{'85' if sig_str == 'Strong' else '50' if sig_str == 'Moderate' else '22'}%;background:{sig_col};opacity:0.7"></div>
+                <div class="ind-bar-fill" style="width:{'85' if sig_str == 'Strong' else '50' if sig_str == 'Moderate' else '22'}%;background:{sig_col};opacity:0.8"></div>
             </div>
             <div class="ind-status" style="color:{sig_col}">Based on {change_pct:+.2f}% predicted delta</div>
         </div>
@@ -755,7 +766,6 @@ if run:
 
     # ── AI Explanation ────────────────────────────────────────
     sec("AI Analysis · Groq LLaMA 3.3")
-    # Format explanation into proper paragraphs
     explanation_html = "".join(
         f"<p>{para.strip()}</p>"
         for para in explanation.replace("\n\n", "\n").split("\n")
@@ -777,33 +787,48 @@ if run:
 
     fig1 = make_subplots(rows=3, cols=1, shared_xaxes=True,
                          row_heights=[0.58, 0.21, 0.21], vertical_spacing=0.04)
+
+    # Candlestick — bright green/red on dark background
     fig1.add_trace(go.Candlestick(
         x=df.index, open=df['Open'], high=df['High'], low=df['Low'], close=df['Close'],
-        increasing=dict(line=dict(color='#2d5a3d', width=1), fillcolor='rgba(45,90,61,0.75)'),
-        decreasing=dict(line=dict(color='#b94040', width=1), fillcolor='rgba(185,64,64,0.75)'),
+        increasing=dict(line=dict(color='#00c896', width=1), fillcolor='rgba(0,200,150,0.8)'),
+        decreasing=dict(line=dict(color='#ff4d6a', width=1), fillcolor='rgba(255,77,106,0.8)'),
         name="OHLC"), row=1, col=1)
+
+    # Bollinger Bands — subtle blue
     fig1.add_trace(go.Scatter(x=df.index, y=df['BB_high'],
-        line=dict(color='rgba(201,151,58,0.3)', width=1, dash='dot'), showlegend=False), row=1, col=1)
+        line=dict(color='rgba(61,111,196,0.4)', width=1, dash='dot'), showlegend=False), row=1, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['BB_low'],
-        fill='tonexty', fillcolor='rgba(201,151,58,0.04)',
-        line=dict(color='rgba(201,151,58,0.3)', width=1, dash='dot'), showlegend=False), row=1, col=1)
+        fill='tonexty', fillcolor='rgba(61,111,196,0.05)',
+        line=dict(color='rgba(61,111,196,0.4)', width=1, dash='dot'), showlegend=False), row=1, col=1)
+
+    # EMA — gold
     fig1.add_trace(go.Scatter(x=df.index, y=df['EMA_20'],
-        line=dict(color='#c9973a', width=1.5), name="EMA 20"), row=1, col=1)
+        line=dict(color='#d4a843', width=1.8), name="EMA 20"), row=1, col=1)
+
+    # RSI — ocean blue
     fig1.add_trace(go.Scatter(x=df.index, y=df['RSI'],
-        line=dict(color='#3d7a52', width=1.5), name="RSI",
-        fill='tozeroy', fillcolor='rgba(61,122,82,0.05)'), row=2, col=1)
-    fig1.add_hline(y=70, line_dash="dot", line_color="rgba(185,64,64,0.4)",  line_width=1, row=2, col=1)
-    fig1.add_hline(y=30, line_dash="dot", line_color="rgba(45,122,58,0.4)",  line_width=1, row=2, col=1)
-    hist_colors = ['#2d5a3d' if v >= 0 else '#b94040' for v in df['MACD_hist']]
+        line=dict(color='#3d6fc4', width=1.5), name="RSI",
+        fill='tozeroy', fillcolor='rgba(61,111,196,0.08)'), row=2, col=1)
+    fig1.add_hline(y=70, line_dash="dot", line_color="rgba(255,77,106,0.5)",  line_width=1, row=2, col=1)
+    fig1.add_hline(y=30, line_dash="dot", line_color="rgba(0,200,150,0.5)",   line_width=1, row=2, col=1)
+
+    # MACD — green/red histogram, gold signal
+    hist_colors = ['rgba(0,200,150,0.7)' if v >= 0 else 'rgba(255,77,106,0.7)' for v in df['MACD_hist']]
     fig1.add_trace(go.Bar(x=df.index, y=df['MACD_hist'],
-        marker_color=hist_colors, name="Histogram", opacity=0.6), row=3, col=1)
+        marker_color=hist_colors, name="Histogram"), row=3, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['MACD'],
-        line=dict(color='#1a3a2a', width=1.5), name="MACD"), row=3, col=1)
+        line=dict(color='#3d6fc4', width=1.5), name="MACD"), row=3, col=1)
     fig1.add_trace(go.Scatter(x=df.index, y=df['MACD_signal'],
-        line=dict(color='#c9973a', width=1.5), name="Signal"), row=3, col=1)
+        line=dict(color='#d4a843', width=1.5), name="Signal"), row=3, col=1)
 
     ly1 = plotly_layout(680)
     ly1['xaxis_rangeslider_visible'] = False
+    # apply dark bg to all subplots
+    ly1['xaxis2'] = dict(**ly1.get('xaxis', {}))
+    ly1['xaxis3'] = dict(**ly1.get('xaxis', {}))
+    ly1['yaxis2'] = dict(**ly1.get('yaxis', {}))
+    ly1['yaxis3'] = dict(**ly1.get('yaxis', {}))
     fig1.update_layout(**ly1)
     st.plotly_chart(fig1, use_container_width=True, config=dict(displayModeBar=False))
     st.markdown('</div>', unsafe_allow_html=True)
@@ -816,34 +841,39 @@ if run:
     pred_x = [last_n.index[-1] + pd.Timedelta(days=1)]
 
     fig2 = go.Figure()
+    # Price line — bright blue
     fig2.add_trace(go.Scatter(
         x=last_n.index, y=last_n['Close'], mode='lines', name='Close Price',
-        line=dict(color='#1a3a2a', width=2),
-        fill='tozeroy', fillcolor='rgba(26,58,42,0.04)'
+        line=dict(color='#3d6fc4', width=2),
+        fill='tozeroy', fillcolor='rgba(61,111,196,0.07)'
     ))
+    # EMA — gold dashed
     fig2.add_trace(go.Scatter(
         x=last_n.index, y=last_n['EMA_20'], mode='lines', name='EMA 20',
-        line=dict(color='#c9973a', width=1.2, dash='dot')
+        line=dict(color='#d4a843', width=1.2, dash='dot')
     ))
+    # Connector to forecast — gold dashed
     fig2.add_trace(go.Scatter(
         x=[last_n.index[-1], pred_x[0]],
         y=[last_n['Close'].iloc[-1], predicted_price],
         mode='lines', showlegend=False,
-        line=dict(color='rgba(201,151,58,0.5)', width=1.5, dash='dash')
+        line=dict(color='rgba(212,168,67,0.6)', width=1.5, dash='dash')
     ))
+    # Forecast point — gold diamond
     fig2.add_trace(go.Scatter(
         x=pred_x, y=[predicted_price], mode='markers+text',
-        marker=dict(size=14, color='#c9973a', symbol='diamond',
-                    line=dict(color='#8a6020', width=2)),
+        marker=dict(size=14, color='#d4a843', symbol='diamond',
+                    line=dict(color='#f5d98a', width=2)),
         text=[f"  ₹{predicted_price:,.2f}"],
         textposition="middle right",
-        textfont=dict(family="DM Mono", size=12, color="#8a6020"),
+        textfont=dict(family="DM Mono", size=12, color="#d4a843"),
         name='LSTM Forecast'
     ))
+    # Current price line
     fig2.add_hline(y=current_price,
-        line_dash="dot", line_color="rgba(26,58,42,0.25)", line_width=1,
+        line_dash="dot", line_color="rgba(154,163,187,0.3)", line_width=1,
         annotation_text=f"  Current ₹{current_price:,.2f}",
-        annotation_font=dict(family="DM Mono", size=10, color="rgba(26,58,42,0.5)"),
+        annotation_font=dict(family="DM Mono", size=10, color="rgba(154,163,187,0.6)"),
         annotation_position="left")
     fig2.update_layout(**plotly_layout(380))
     st.plotly_chart(fig2, use_container_width=True, config=dict(displayModeBar=False))
@@ -855,11 +885,11 @@ if run:
 
     with ca:
         st.markdown('<div class="chart-card">', unsafe_allow_html=True)
-        vol_colors = ['#2d5a3d' if c >= o else '#b94040'
+        vol_colors = ['rgba(0,200,150,0.75)' if c >= o else 'rgba(255,77,106,0.75)'
                       for c, o in zip(last_n['Close'], last_n['Open'])]
         fig3 = go.Figure(go.Bar(
             x=last_n.index, y=last_n['Volume'],
-            marker_color=vol_colors, opacity=0.7, name='Volume'
+            marker_color=vol_colors, name='Volume'
         ))
         fig3.update_layout(**plotly_layout(260))
         st.plotly_chart(fig3, use_container_width=True, config=dict(displayModeBar=False))
@@ -869,8 +899,8 @@ if run:
         st.markdown('<div class="chart-card">', unsafe_allow_html=True)
         fig4 = go.Figure(go.Scatter(
             x=df.index, y=df['ATR'],
-            line=dict(color='#c9973a', width=1.5),
-            fill='tozeroy', fillcolor='rgba(201,151,58,0.06)',
+            line=dict(color='#d4a843', width=1.5),
+            fill='tozeroy', fillcolor='rgba(212,168,67,0.07)',
             name='ATR(14)'
         ))
         fig4.update_layout(**plotly_layout(260))
