@@ -8,11 +8,9 @@ import json
 
 
 
-# ── Constants ──────────────────────────────────────────────
 LSTM_LOOKBACK = 10
 LSTM_EPOCHS   = 100
 
-# Dict format so app.py can show clean names in dropdown
 COMPANIES = {
     "RELIANCE  ·  Reliance Industries":   "RELIANCE.NS",
     "TCS       ·  Tata Consultancy Svcs": "TCS.NS",
@@ -26,7 +24,7 @@ COMPANIES = {
 }
 
 
-# ── Step 1: Fetch Data ──────────────────────────────────────
+
 def fetch_data(symbol: str, period: str = "6mo") -> pd.DataFrame:
     stock = yf.Ticker(symbol)
     hist  = stock.history(period=period)
@@ -37,7 +35,7 @@ def fetch_data(symbol: str, period: str = "6mo") -> pd.DataFrame:
     return hist
 
 
-# ── Step 2: Add Technical Indicators ───────────────────────
+
 def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
     df = df.copy()
     df['RSI']         = ta.momentum.RSIIndicator(df['Close'], window=14).rsi()
@@ -57,7 +55,6 @@ def add_indicators(df: pd.DataFrame) -> pd.DataFrame:
     return df
 
 
-# ── Step 3: Train LSTM ──────────────────────────────────────
 def trainLSTM(prices, lookback=LSTM_LOOKBACK, epochs=LSTM_EPOCHS):
     from tensorflow.keras.models import Sequential
     from tensorflow.keras.layers import Dense, LSTM, Dropout
@@ -85,12 +82,11 @@ def trainLSTM(prices, lookback=LSTM_LOOKBACK, epochs=LSTM_EPOCHS):
     return float(scaler.inverse_transform([[pred_scaled]])[0][0])
 
 
-# ── Step 4: LLM Explanation ────────────────────────────────
 def get_llm_explanation(groq_api_key, symbol, current_price,lstm_price, change_pct, trend, rsi, macd):
     from groq import Groq
                              
     if not groq_api_key or groq_api_key.strip() == "":
-        return "⚠️ No Groq API key provided. Enter your key in the sidebar to enable AI explanations."
+        return " No Groq API key provided. Enter your key in the sidebar to enable AI explanations."
     try:
         client = Groq(api_key=groq_api_key.strip())
         prompt = f"""
@@ -116,7 +112,7 @@ Be friendly, confident, and encouraging. No complex jargon.
         )
         return response.choices[0].message.content
     except Exception as e:
-        return f"⚠️ LLM call failed: {str(e)}"
+        return f" LLM call failed: {str(e)}"
 
 
 # ── Step 5: Predict ─────────────────────────────────────────
@@ -168,7 +164,7 @@ def predict(symbol, data, groq_api_key=""):
         "rsi_status":      "OVERBOUGHT" if rsi > 70 else "OVERSOLD" if rsi < 30 else "NEUTRAL",
         "macd_status":     "BULLISH" if macd > 0 else "BEARISH",
         "AI_explanation":  explanation,
-        "df":              stock_data,   # full df for charts in app.py
+        "df":              stock_data,   
     }
 
 
